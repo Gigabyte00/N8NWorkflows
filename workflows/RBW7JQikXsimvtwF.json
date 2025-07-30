@@ -1,0 +1,852 @@
+{
+  "active": false,
+  "connections": {
+    "Sale Query": {
+      "main": [
+        [
+          {
+            "node": "Signature Limit SELL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Order Query": {
+      "main": [
+        [
+          {
+            "node": "Signature Limit BUY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenOrder Query": {
+      "main": [
+        [
+          {
+            "node": "Signature OpenOrder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Credentials": {
+      "main": [
+        [
+          {
+            "node": "Set Account Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Market Buy Query": {
+      "main": [
+        [
+          {
+            "node": "Signature MarketBuy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LimitBuy Parmeter": {
+      "main": [
+        [
+          {
+            "node": "Order Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Market Sell Query": {
+      "main": [
+        [
+          {
+            "node": "Signature MarketSell",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Account Query": {
+      "main": [
+        [
+          {
+            "node": "Account Info Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Account Info Query": {
+      "main": [
+        [
+          {
+            "node": "Signature Get Account",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Open Orders Params": {
+      "main": [
+        [
+          {
+            "node": "OpenOrder Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LimitSale Parameter": {
+      "main": [
+        [
+          {
+            "node": "Sale Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MarketBuy Parameter": {
+      "main": [
+        [
+          {
+            "node": "Market Buy Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature Limit BUY": {
+      "main": [
+        [
+          {
+            "node": "Execute Limit BUY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature MarketBuy": {
+      "main": [
+        [
+          {
+            "node": "Execute MarketBuy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature OpenOrder": {
+      "main": [
+        [
+          {
+            "node": "Get Open Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CancelAllOrder Query": {
+      "main": [
+        [
+          {
+            "node": "Signature Cancel All Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MarketSell Parameter": {
+      "main": [
+        [
+          {
+            "node": "Market Sell Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature Limit SELL": {
+      "main": [
+        [
+          {
+            "node": "Execute Limit SELL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature MarketSell": {
+      "main": [
+        [
+          {
+            "node": "Execute MarketSell",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature Get Account": {
+      "main": [
+        [
+          {
+            "node": "Get Account Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cancel All Order Params": {
+      "main": [
+        [
+          {
+            "node": "CancelAllOrder Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature Cancel All Order": {
+      "main": [
+        [
+          {
+            "node": "Cancell All Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Credentials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-17T19:02:53.418Z",
+  "id": "RBW7JQikXsimvtwF",
+  "isArchived": false,
+  "meta": {
+    "templateId": "5036"
+  },
+  "name": "Binance Spot Trader - Limit & Market Orders via API",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "93a8429c-b9ef-43de-934b-2c6fd9db1bb3",
+      "name": "When clicking ‘Execute workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"timestamp\": \"{{ $now.toMillis() }}\"\n}\n",
+        "include": "selected",
+        "includeFields": "timestamp",
+        "options": {}
+      },
+      "id": "250640b9-95f7-48b7-bf1d-07fc90026bee",
+      "name": "Set Account Query",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1056,
+        -304
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{ $json.queryString }}",
+        "dataPropertyName": "signature",
+        "secret": "={{ $('Set Credentials').item.json.api_secret }}"
+      },
+      "id": "6dcb5a49-149d-4f62-bb69-137cec92f81f",
+      "name": "Signature Get Account",
+      "type": "n8n-nodes-base.crypto",
+      "position": [
+        1456,
+        -304
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// แปลง JSON object เป็น query string\nconst data = items[0].json;\n\n// วิธีที่ 1: ใช้ Object.keys() และ map()\nconst queryString = Object.keys(data)\n  .map(key => `${key}=${data[key]}`)\n  .join('&');\n\nreturn [{\n  json: {\n    queryString: queryString,\n    originalData: data\n  }\n}];"
+      },
+      "id": "4983062d-1e68-4f15-a4d2-955fc81267b5",
+      "name": "Account Info Query",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1248,
+        -304
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// แปลง JSON object เป็น query string\nconst data = items[0].json;\n\n// วิธีที่ 1: ใช้ Object.keys() และ map()\nconst queryString = Object.keys(data)\n  .map(key => `${key}=${data[key]}`)\n  .join('&');\n\nreturn [{\n  json: {\n    queryString: queryString,\n    originalData: data\n  }\n}];"
+      },
+      "id": "57699751-49fa-4420-aa5a-291bc11fa631",
+      "name": "Order Query",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1248,
+        -128
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"symbol\": \"BTCUSDT\",\n  \"side\": \"BUY\",\n  \"type\": \"LIMIT\",\n  \"price\": 98000.20,\n  \"quantity\": 0.0001,\n  \"timeInForce\": \"GTC\",\n  \"timestamp\": \"{{ $now.toMillis() }}\"\n}",
+        "include": "none",
+        "options": {}
+      },
+      "id": "92ff9826-2f60-4d35-8c58-30b483db49d6",
+      "name": "LimitBuy Parmeter",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1056,
+        -128
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "api_key"
+            },
+            {
+              "name": "api_secret"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "94a537dd-b59d-49cd-9daf-848a22df9e8d",
+      "name": "Set Credentials",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        576,
+        240
+      ],
+      "notesInFlow": true,
+      "typeVersion": 1,
+      "notes": "กรุณาสร้าง Binance API Credentials ใน n8n:\n1. ไปที่ Credentials > New\n2. เลือก Binance API\n3. ใส่ API Key และ Secret Key\n4. ตั้งชื่อว่า 'Binance API'\n5. Save\n\nทุก node จะใช้ credential เดียวกันนี้"
+    },
+    {
+      "parameters": {
+        "url": "https://api.binance.com/api/v3/account",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "timestamp",
+              "value": "={{ $('Set Account Query').item.json.timestamp }}"
+            },
+            {
+              "name": "signature",
+              "value": "={{ $json.signature }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-MBX-APIKEY",
+              "value": "={{ $('Set Credentials').item.json.api_key }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9850ff29-6d6a-4fcc-bcc9-ed14c0fe1e7b",
+      "name": "Get Account Info",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1680,
+        -304
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"symbol\": \"BTCUSDT\",\n  \"side\": \"SELL\",\n  \"type\": \"LIMIT\",\n  \"price\": 98000.20,\n  \"quantity\": 0.0001,\n  \"timeInForce\": \"GTC\",\n  \"timestamp\": \"{{ $now.toMillis() }}\"\n}",
+        "include": "none",
+        "options": {}
+      },
+      "id": "9a3e31fc-7da7-48dc-8758-4d109addea56",
+      "name": "LimitSale Parameter",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1056,
+        64
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// แปลง JSON object เป็น query string\nconst data = items[0].json;\n\n// วิธีที่ 1: ใช้ Object.keys() และ map()\nconst queryString = Object.keys(data)\n  .map(key => `${key}=${data[key]}`)\n  .join('&');\n\nreturn [{\n  json: {\n    queryString: queryString,\n    originalData: data\n  }\n}];"
+      },
+      "id": "4d43ab9f-69a8-4eb3-a700-234f480cb8d7",
+      "name": "Sale Query",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1248,
+        64
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.binance.com/api/v3/order",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-MBX-APIKEY",
+              "value": "={{ $('Set Credentials').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "specifyBody": "string",
+        "body": "={{ $json.queryString }}&signature={{ $json.signature }}",
+        "options": {}
+      },
+      "id": "684e1d96-a2ef-4075-9545-ed904c8d798a",
+      "name": "Execute Limit SELL",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1680,
+        64
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.binance.com/api/v3/order",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-MBX-APIKEY",
+              "value": "={{ $('Set Credentials').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "specifyBody": "string",
+        "body": "={{ $json.queryString }}&signature={{ $json.signature }}",
+        "options": {}
+      },
+      "id": "96ca7f7d-e60d-4944-80ec-c2b9ba02876a",
+      "name": "Execute Limit BUY",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1680,
+        -128
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// แปลง JSON object เป็น query string\nconst data = items[0].json;\n\n// วิธีที่ 1: ใช้ Object.keys() และ map()\nconst queryString = Object.keys(data)\n  .map(key => `${key}=${data[key]}`)\n  .join('&');\n\nreturn [{\n  json: {\n    queryString: queryString,\n    originalData: data\n  }\n}];"
+      },
+      "id": "b13d8b19-0222-45fe-9558-b33aeffa2bc1",
+      "name": "Market Buy Query",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1248,
+        240
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"symbol\": \"BTCUSDT\",\n  \"side\": \"BUY\",\n  \"type\": \"MARKET\",\n  \"quantity\": 0.0001,\n  \"timestamp\": \"{{ $now.toMillis() }}\"\n}",
+        "include": "none",
+        "options": {}
+      },
+      "id": "4fb1f7a5-9a70-4870-bfd7-5575d587cb43",
+      "name": "MarketBuy Parameter",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1056,
+        240
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{ $json.queryString }}",
+        "dataPropertyName": "signature",
+        "secret": "={{ $('Set Credentials').item.json.api_secret }}"
+      },
+      "id": "b4e45c9e-5a1c-4cf0-aed3-30520bf92cb9",
+      "name": "Signature MarketBuy",
+      "type": "n8n-nodes-base.crypto",
+      "position": [
+        1456,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{ $json.queryString }}",
+        "dataPropertyName": "signature",
+        "secret": "={{ $('Set Credentials').item.json.api_secret }}"
+      },
+      "id": "4c9f4a4d-049e-431d-b053-a694698bd0ba",
+      "name": "Signature Limit BUY",
+      "type": "n8n-nodes-base.crypto",
+      "position": [
+        1456,
+        -128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{ $json.queryString }}",
+        "dataPropertyName": "signature",
+        "secret": "={{ $('Set Credentials').item.json.api_secret }}"
+      },
+      "id": "5c148d9e-c980-4485-944e-9535ca79d7af",
+      "name": "Signature Limit SELL",
+      "type": "n8n-nodes-base.crypto",
+      "position": [
+        1456,
+        64
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.binance.com/api/v3/order",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-MBX-APIKEY",
+              "value": "={{ $('Set Credentials').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "specifyBody": "string",
+        "body": "={{ $json.queryString }}&signature={{ $json.signature }}",
+        "options": {}
+      },
+      "id": "d519fced-aaca-4dfb-bae0-818491d9791f",
+      "name": "Execute MarketBuy",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1680,
+        240
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"symbol\": \"BTCUSDT\",\n  \"side\": \"SELL\",\n  \"type\": \"MARKET\",\n  \"quantity\": 0.0001,\n  \"timestamp\": \"{{ $now.toMillis() }}\"\n}",
+        "include": "none",
+        "options": {}
+      },
+      "id": "916751cf-0525-4d7e-b6ee-6412beecf870",
+      "name": "MarketSell Parameter",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1056,
+        448
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// แปลง JSON object เป็น query string\nconst data = items[0].json;\n\n// วิธีที่ 1: ใช้ Object.keys() และ map()\nconst queryString = Object.keys(data)\n  .map(key => `${key}=${data[key]}`)\n  .join('&');\n\nreturn [{\n  json: {\n    queryString: queryString,\n    originalData: data\n  }\n}];"
+      },
+      "id": "0e03892e-4c5d-4a7c-9bff-acc014fbff03",
+      "name": "Market Sell Query",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1248,
+        448
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{ $json.queryString }}",
+        "dataPropertyName": "signature",
+        "secret": "={{ $('Set Credentials').item.json.api_secret }}"
+      },
+      "id": "493074d1-7a6d-4b63-956d-55cda01e885d",
+      "name": "Signature MarketSell",
+      "type": "n8n-nodes-base.crypto",
+      "position": [
+        1456,
+        448
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.binance.com/api/v3/order",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-MBX-APIKEY",
+              "value": "={{ $('Set Credentials').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "specifyBody": "string",
+        "body": "={{ $json.queryString }}&signature={{ $json.signature }}",
+        "options": {}
+      },
+      "id": "537afa17-ac5e-4d73-ac9c-ceabc644cc22",
+      "name": "Execute MarketSell",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1680,
+        448
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// แปลง JSON object เป็น query string\nconst data = items[0].json;\n\n// วิธีที่ 1: ใช้ Object.keys() และ map()\nconst queryString = Object.keys(data)\n  .map(key => `${key}=${data[key]}`)\n  .join('&');\n\nreturn [{\n  json: {\n    queryString: queryString,\n    originalData: data\n  }\n}];"
+      },
+      "id": "877a0eb7-866b-4c73-bbee-cb5b9e49b786",
+      "name": "OpenOrder Query",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1248,
+        640
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"timestamp\": \"{{ $now.toMillis() }}\",\n  \"symbol\": \"BTCUSDT\",\n  \"recvWindow\": 2000\n}\n",
+        "include": "none",
+        "options": {}
+      },
+      "id": "641c40ab-e673-4acd-8a48-5d7592800da2",
+      "name": "Open Orders Params",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1056,
+        640
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{ $json.queryString }}",
+        "dataPropertyName": "signature",
+        "secret": "={{ $('Set Credentials').item.json.api_secret }}"
+      },
+      "id": "d0457455-134c-4425-bbbc-b4e1c3eedccf",
+      "name": "Signature OpenOrder",
+      "type": "n8n-nodes-base.crypto",
+      "position": [
+        1456,
+        640
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "=https://api.binance.com/api/v3/openOrders?{{ $json.queryString }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "signature",
+              "value": "={{ $json.signature }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-MBX-APIKEY",
+              "value": "={{ $('Set Credentials').item.json.api_key }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3e8f723a-22ae-418c-9def-f95588d51080",
+      "name": "Get Open Orders",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1680,
+        640
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"timestamp\": \"{{ $now.toMillis() }}\",\n  \"symbol\": \"BTCUSDT\",\n  \"recvWindow\": 2000\n}\n",
+        "include": "none",
+        "options": {}
+      },
+      "id": "4c65712a-2a49-4dd6-b346-1b61fbfed417",
+      "name": "Cancel All Order Params",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1056,
+        848
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// แปลง JSON object เป็น query string\nconst data = items[0].json;\n\n// วิธีที่ 1: ใช้ Object.keys() และ map()\nconst queryString = Object.keys(data)\n  .map(key => `${key}=${data[key]}`)\n  .join('&');\n\nreturn [{\n  json: {\n    queryString: queryString,\n    originalData: data\n  }\n}];"
+      },
+      "id": "cde8a4d3-678a-464f-886b-763982ebfe01",
+      "name": "CancelAllOrder Query",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1248,
+        848
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "action": "hmac",
+        "type": "SHA256",
+        "value": "={{ $json.queryString }}",
+        "dataPropertyName": "signature",
+        "secret": "={{ $('Set Credentials').item.json.api_secret }}"
+      },
+      "id": "bcb50ec1-cf95-464d-989f-e5c577b6695f",
+      "name": "Signature Cancel All Order",
+      "type": "n8n-nodes-base.crypto",
+      "position": [
+        1456,
+        848
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://api.binance.com/api/v3/openOrders",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "signature",
+              "value": "={{ $json.signature }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-MBX-APIKEY",
+              "value": "={{ $('Set Credentials').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "specifyBody": "string",
+        "body": "={{ $json.queryString }}",
+        "options": {}
+      },
+      "id": "2ceec541-944d-42c8-b36d-dee7abef0a26",
+      "name": "Cancell All Order",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1680,
+        848
+      ],
+      "typeVersion": 3
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-17T19:02:53.418Z",
+  "versionId": "563d562a-dc52-44b9-b6b0-ec99592c4a8e"
+}
