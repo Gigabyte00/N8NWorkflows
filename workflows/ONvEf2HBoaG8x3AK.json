@@ -1,0 +1,340 @@
+{
+  "active": false,
+  "connections": {
+    "Market Hours Schedule": {
+      "main": [
+        [
+          {
+            "node": "Initialize Alpaca Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Alpaca Client": {
+      "main": [
+        [
+          {
+            "node": "Fetch SPY Price (SDK)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch SPY Price (SDK)": {
+      "main": [
+        [
+          {
+            "node": "Movement Calculator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Movement Calculator": {
+      "main": [
+        [
+          {
+            "node": "Account Validator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Account Validator": {
+      "main": [
+        [
+          {
+            "node": "Get Account Info (SDK)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Account Info (SDK)": {
+      "main": [
+        [
+          {
+            "node": "Trading Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trading Gate": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Validation Failed Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validation Failed Handler": {
+      "main": [
+        [
+          {
+            "node": "Log Validation to Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Status Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status Aggregator": {
+      "main": [
+        [
+          {
+            "node": "Return Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-23T17:51:52.725Z",
+  "id": "ONvEf2HBoaG8x3AK",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Alpaca with SDK",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "id": "00e05df5-5167-4202-8f5a-0dd09c1b6f25",
+      "name": "Market Hours Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1184,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// SDK Initialization and Configuration\nconst initAlpacaClient = () => {\n  try {\n    // Try to load official SDK\n    const Alpaca = require('@alpacahq/alpaca-trade-api');\n    \n    console.log('✅ Using official Alpaca SDK');\n    return {\n      client: new Alpaca({\n        keyId: $credentials.alpaca.apiKeyId,\n        secretKey: $credentials.alpaca.apiSecretKey,\n        paper: true,\n        feed: 'iex',\n        usePolygon: false\n      }),\n      type: 'official_sdk'\n    };\n  } catch (sdkError) {\n    console.log('⚠️ SDK not available, using enhanced HTTP client');\n    \n    // Enhanced HTTP client with SDK-like features\n    const createEnhancedClient = () => {\n      const baseUrl = 'https://paper-api.alpaca.markets';\n      const dataUrl = 'https://data.alpaca.markets';\n      \n      const makeRequest = async (endpoint, options = {}) => {\n        const url = `${options.dataApi ? dataUrl : baseUrl}${endpoint}`;\n        \n        const config = {\n          method: options.method || 'GET',\n          headers: {\n            'APCA-API-KEY-ID': $credentials.alpaca.apiKeyId,\n            'APCA-API-SECRET-KEY': $credentials.alpaca.apiSecretKey,\n            'Content-Type': 'application/json',\n            ...(options.headers || {})\n          },\n          ...(options.body && { body: JSON.stringify(options.body) })\n        };\n\n        let retries = 3;\n        while (retries > 0) {\n          try {\n            const response = await fetch(url, config);\n            \n            if (!response.ok) {\n              const errorData = await response.json().catch(() => ({}));\n              \n              // Rate limiting - retry with exponential backoff\n              if (response.status === 429) {\n                const delay = (4 - retries) * 1000;\n                console.log(`Rate limited, retrying in ${delay}ms...`);\n                await new Promise(resolve => setTimeout(resolve, delay));\n                retries--;\n                continue;\n              }\n              \n              // Enhanced error messages\n              let errorMessage = `Alpaca API Error ${response.status}`;\n              if (errorData.message) {\n                errorMessage += `: ${errorData.message}`;\n              } else if (response.status === 403) {\n                errorMessage += ': Insufficient permissions (check options trading level)';\n              } else if (response.status === 422) {\n                errorMessage += ': Invalid request parameters';\n              }\n              \n              throw new Error(errorMessage);\n            }\n            \n            return await response.json();\n          } catch (error) {\n            if (retries === 1 || !error.message.includes('429')) {\n              throw error;\n            }\n            retries--;\n          }\n        }\n      };\n\n      return {\n        // Account methods\n        getAccount: () => makeRequest('/v2/account'),\n        getPositions: () => makeRequest('/v2/positions'),\n        \n        // Market data methods  \n        getSnapshots: (symbols) => makeRequest(\n          `/v2/stocks/snapshots?symbols=${symbols.join(',')}&feed=iex`, \n          { dataApi: true }\n        ),\n        \n        getOptionsChain: (symbol, params = {}) => {\n          const query = new URLSearchParams(params).toString();\n          return makeRequest(\n            `/v1beta1/options/snapshots/${symbol}?${query}`, \n            { dataApi: true }\n          );\n        },\n        \n        // Trading methods\n        createOrder: (orderData) => makeRequest('/v2/orders', {\n          method: 'POST',\n          body: orderData\n        })\n      };\n    };\n    \n    return {\n      client: createEnhancedClient(),\n      type: 'enhanced_http'\n    };\n  }\n};\n\n// Initialize and test client\nconst alpacaSetup = initAlpacaClient();\n\n// Store client globally for other nodes to use\n$workflow.staticData.alpacaClient = alpacaSetup.client;\n$workflow.staticData.clientType = alpacaSetup.type;\n\nreturn [{\n  json: {\n    clientType: alpacaSetup.type,\n    timestamp: new Date().toISOString(),\n    status: 'initialized'\n  }\n}];"
+      },
+      "id": "927f4bc6-7e11-4faa-9bb3-2a6526686b1c",
+      "name": "Initialize Alpaca Client",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -960,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Enhanced SPY Price Fetcher with SDK\nconst alpaca = $workflow.staticData.alpacaClient;\n\nif (!alpaca) {\n  throw new Error('Alpaca client not initialized. Run Initialize node first.');\n}\n\ntry {\n  let spyData;\n  \n  if ($workflow.staticData.clientType === 'official_sdk') {\n    // Using official SDK\n    const snapshots = await alpaca.getSnapshots(['SPY']);\n    spyData = snapshots.SPY;\n  } else {\n    // Using enhanced HTTP client\n    const snapshots = await alpaca.getSnapshots(['SPY']);\n    spyData = snapshots.SPY;\n  }\n  \n  // Validate data structure\n  if (!spyData || !spyData.latestTrade || !spyData.dailyBar) {\n    throw new Error('Invalid SPY data received - missing required fields');\n  }\n  \n  const currentPrice = spyData.latestTrade.p || spyData.latestTrade.price;\n  const openPrice = spyData.dailyBar.o || spyData.dailyBar.open;\n  \n  if (typeof currentPrice !== 'number' || typeof openPrice !== 'number') {\n    throw new Error(`Invalid price data: current=${currentPrice}, open=${openPrice}`);\n  }\n  \n  console.log(`✅ SPY Data: Current=$${currentPrice}, Open=$${openPrice}`);\n  \n  return [{\n    json: {\n      SPY: {\n        latestTrade: { p: currentPrice },\n        dailyBar: { o: openPrice }\n      },\n      metadata: {\n        timestamp: new Date().toISOString(),\n        source: $workflow.staticData.clientType,\n        priceValid: true\n      }\n    }\n  }];\n  \n} catch (error) {\n  const errorInfo = {\n    timestamp: new Date().toISOString(),\n    node: 'Fetch SPY Price',\n    error: error.message,\n    type: 'market_data_error',\n    clientType: $workflow.staticData.clientType || 'unknown'\n  };\n  \n  console.error('❌ SPY Price fetch failed:', errorInfo);\n  \n  // Store error for monitoring but don't stop workflow\n  if (!$workflow.staticData.errorLog) {\n    $workflow.staticData.errorLog = [];\n  }\n  $workflow.staticData.errorLog.push(errorInfo);\n  \n  throw new Error(`Failed to fetch SPY price: ${error.message}`);\n}"
+      },
+      "id": "2bb6b791-7989-434d-8eb6-d2de13699460",
+      "name": "Fetch SPY Price (SDK)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -736,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Movement Calculator with Enhanced Validation\nconst spyData = $input.item.json.SPY;\n\nif (!spyData?.latestTrade?.p || !spyData?.dailyBar?.o) {\n  throw new Error('Invalid SPY data structure received');\n}\n\nconst currentPrice = spyData.latestTrade.p;\nconst openPrice = spyData.dailyBar.o;\n\n// Validate price reasonableness (SPY typically $300-$600)\nif (currentPrice < 200 || currentPrice > 800 || openPrice < 200 || openPrice > 800) {\n  throw new Error(`Suspicious price data: current=${currentPrice}, open=${openPrice}`);\n}\n\n// Calculate percentage change\nconst percentChange = ((currentPrice - openPrice) / openPrice) * 100;\n\n// Store data in workflow static data for status tracking\n$workflow.staticData.currentPrice = currentPrice;\n$workflow.staticData.openingPrice = openPrice;\n$workflow.staticData.percentChange = percentChange;\n$workflow.staticData.lastPriceDate = new Date().toISOString();\n\n// Determine signal based on movement\nlet signal = null;\nlet signalStrength = 'none';\n\nif (percentChange >= 1.2) {\n  signal = 'bearish_credit_spread';\n  signalStrength = percentChange >= 2.0 ? 'strong' : 'moderate';\n} else if (percentChange <= -1.2) {\n  signal = 'bullish_credit_spread';\n  signalStrength = percentChange <= -2.0 ? 'strong' : 'moderate';\n}\n\n// Check if we've already traded today\nconst today = new Date().toDateString();\nconst hasTraded = $workflow.staticData.lastTradeDate === today;\n\n// Enhanced trading conditions\nconst shouldTrade = signal !== null && !hasTraded && \n                   Math.abs(percentChange) <= 10; // Don't trade on extreme moves\n\nconsole.log(`📊 Movement Analysis: ${percentChange.toFixed(2)}% | Signal: ${signal || 'none'} | Strength: ${signalStrength}`);\n\nreturn [{\n  json: {\n    currentPrice,\n    openPrice,\n    percentChange: parseFloat(percentChange.toFixed(2)),\n    absMovement: Math.abs(percentChange),\n    signal,\n    signalStrength,\n    hasTraded,\n    shouldTrade,\n    tradingDay: today,\n    timestamp: new Date().toISOString(),\n    validation: {\n      priceReasonable: true,\n      movementValid: Math.abs(percentChange) <= 10,\n      tradingEligible: shouldTrade\n    }\n  }\n}];"
+      },
+      "id": "a73444d9-4493-40ae-9951-995155dcc099",
+      "name": "Movement Calculator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -512,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Enhanced Account Validator with SDK Integration\nconst movementData = $input.item.json;\nconst alpaca = $workflow.staticData.alpacaClient;\n\n// Pre-validation checks\nif (!movementData.shouldTrade) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: `No trading conditions met: ${movementData.signal ? 'Already traded today' : 'Insufficient movement'}`,\n      skipTrading: true\n    }\n  }];\n}\n\n// Check circuit breaker status\nif ($workflow.staticData.circuitBreakerTripped) {\n  const tripTime = new Date($workflow.staticData.circuitBreakerTime);\n  const now = new Date();\n  const hoursSinceTrigger = (now - tripTime) / (1000 * 60 * 60);\n  \n  // Reset circuit breaker after 4 hours\n  if (hoursSinceTrigger > 4) {\n    $workflow.staticData.circuitBreakerTripped = false;\n    $workflow.staticData.circuitBreakerTime = null;\n    console.log('🔓 Circuit breaker reset after 4 hours');\n  } else {\n    return [{\n      json: {\n        ...movementData,\n        validationPassed: false,\n        validationReason: `Circuit breaker active (${hoursSinceTrigger.toFixed(1)}h remaining)`,\n        skipTrading: true\n      }\n    }];\n  }\n}\n\n// Enhanced market hours validation (consider timezone)\nconst now = new Date();\nconst etTime = new Date(now.toLocaleString(\"en-US\", {timeZone: \"America/New_York\"}));\nconst currentHour = etTime.getHours();\nconst currentMinutes = etTime.getMinutes();\nconst currentTime = currentHour * 100 + currentMinutes;\n\n// Market hours: 9:30 AM - 3:55 PM ET (leave 5 mins buffer before close)\nif (currentTime < 930 || currentTime >= 1555) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: `Outside trading hours (${currentHour}:${currentMinutes.toString().padStart(2, '0')} ET)`,\n      skipTrading: true,\n      marketTime: {\n        current: `${currentHour}:${currentMinutes.toString().padStart(2, '0')} ET`,\n        marketOpen: '09:30 ET',\n        tradingCutoff: '15:55 ET'\n      }\n    }\n  }];\n}\n\n// Movement validation with enhanced checks\nconst absMovement = Math.abs(movementData.percentChange);\nif (absMovement < 1.2) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: `Movement ${absMovement.toFixed(2)}% below 1.2% threshold`,\n      skipTrading: true\n    }\n  }];\n}\n\n// Extreme movement check (potential data error or market disruption)\nif (absMovement > 10) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: `Movement ${absMovement.toFixed(2)}% too extreme (>10% - possible data error)`,\n      skipTrading: true\n    }\n  }];\n}\n\n// Check for market volatility (VIX proxy)\nif (absMovement > 5) {\n  console.log(`⚠️ High volatility detected: ${absMovement.toFixed(2)}% movement`);\n}\n\nconsole.log('✅ Pre-validation checks passed');\n\nreturn [{\n  json: {\n    ...movementData,\n    validationPassed: true,\n    validationReason: 'Pre-checks passed - proceeding to account validation',\n    skipTrading: false,\n    marketConditions: {\n      volatilityAlert: absMovement > 5,\n      signalStrength: movementData.signalStrength,\n      marketTime: `${currentHour}:${currentMinutes.toString().padStart(2, '0')} ET`\n    }\n  }\n}];"
+      },
+      "id": "14446e3f-3b6a-45fa-8c48-0bfc7f03fbe5",
+      "name": "Account Validator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Enhanced Account Info Fetcher with SDK\nconst alpaca = $workflow.staticData.alpacaClient;\nconst movementData = $input.item.json;\n\nif (!alpaca) {\n  throw new Error('Alpaca client not initialized');\n}\n\n// Skip if pre-validation failed\nif (!movementData.validationPassed) {\n  return [{ json: movementData }];\n}\n\ntry {\n  console.log('📊 Fetching account information...');\n  \n  const accountInfo = await alpaca.getAccount();\n  \n  // Validate required fields\n  const requiredFields = ['buying_power', 'equity', 'daytrading_buying_power', 'status'];\n  const missingFields = requiredFields.filter(field => !(field in accountInfo));\n  \n  if (missingFields.length > 0) {\n    throw new Error(`Missing account fields: ${missingFields.join(', ')}`);\n  }\n  \n  // Check account status\n  if (accountInfo.status !== 'ACTIVE') {\n    throw new Error(`Account not active: ${accountInfo.status}`);\n  }\n  \n  // Parse numeric fields safely\n  const buyingPower = parseFloat(accountInfo.buying_power || 0);\n  const equity = parseFloat(accountInfo.equity || 0);\n  const dayTradingBuyingPower = parseFloat(accountInfo.daytrading_buying_power || 0);\n  \n  // Enhanced account analysis\n  const accountAnalysis = {\n    ...accountInfo,\n    computed: {\n      available_buying_power: Math.min(buyingPower, dayTradingBuyingPower),\n      max_risk_per_trade: equity * 0.02, // 2% max risk\n      options_enabled: accountInfo.options_trading_level && \n                      accountInfo.options_trading_level !== 'none',\n      account_health: equity > 2000 ? 'good' : 'insufficient',\n      day_trades_remaining: parseInt(accountInfo.day_trade_count || 0) < 3 ? \n                           (3 - parseInt(accountInfo.day_trade_count || 0)) : 0\n    },\n    raw: {\n      buying_power: buyingPower,\n      equity: equity,\n      daytrading_buying_power: dayTradingBuyingPower\n    },\n    metadata: {\n      timestamp: new Date().toISOString(),\n      source: $workflow.staticData.clientType\n    }\n  };\n  \n  console.log(`✅ Account loaded: $${equity.toFixed(2)} equity, Options Level: ${accountInfo.options_trading_level}`);\n  \n  return [{ json: accountAnalysis }];\n  \n} catch (error) {\n  const errorInfo = {\n    timestamp: new Date().toISOString(),\n    node: 'Get Account Info',\n    error: error.message,\n    type: 'account_data_error'\n  };\n  \n  console.error('❌ Account info fetch failed:', errorInfo);\n  \n  // Store error but continue with fallback\n  if (!$workflow.staticData.errorLog) {\n    $workflow.staticData.errorLog = [];\n  }\n  $workflow.staticData.errorLog.push(errorInfo);\n  \n  throw new Error(`Failed to get account info: ${error.message}`);\n}"
+      },
+      "id": "7d8ff97f-3bb6-492f-a322-4ceb152bc3ab",
+      "name": "Get Account Info (SDK)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7a",
+              "leftValue": "={{ $json.validationPassed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            },
+            {
+              "id": "7b",
+              "leftValue": "={{ $json.skipTrading }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e11a507b-7dff-4d0a-beac-405eef43d73b",
+      "name": "Trading Gate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validation Failed Handler\nconst validationData = $input.item.json;\n\n// Create log entry\nconst logEntry = {\n  timestamp: new Date().toISOString(),\n  reason: validationData.validationReason,\n  currentPrice: validationData.currentPrice,\n  percentChange: validationData.percentChange,\n  signal: validationData.signal,\n  accountData: validationData.accountData || 'Not available'\n};\n\n// Store validation failures for monitoring\nif (!$workflow.staticData.validationFailures) {\n  $workflow.staticData.validationFailures = [];\n}\n$workflow.staticData.validationFailures.push(logEntry);\n\n// Keep only last 50 validation failures\nif ($workflow.staticData.validationFailures.length > 50) {\n  $workflow.staticData.validationFailures.splice(0, \n    $workflow.staticData.validationFailures.length - 50\n  );\n}\n\nconsole.log(`Trading validation failed: ${validationData.validationReason}`);\n\nreturn [{\n  json: {\n    success: false,\n    action: 'validation_failed',\n    reason: validationData.validationReason,\n    logEntry,\n    message: `Trading skipped: ${validationData.validationReason}`\n  }\n}];"
+      },
+      "id": "d55ac3f7-2a7d-4cec-b509-0119ab571669",
+      "name": "Validation Failed Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Validation_Log",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "22ce49f0-df2b-44cb-8aab-75d56c1e9419",
+      "name": "Log Validation to Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        624,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "path": "spy-trading-status",
+        "options": {}
+      },
+      "id": "878c4541-d87d-4a5b-841a-333775fcc842",
+      "name": "Status Dashboard",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        -1008,
+        -32
+      ],
+      "webhookId": "spy-trading-status-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Status Aggregator\nif (!$workflow.staticData) {\n  $workflow.staticData = {};\n}\n\nconst systemStatus = {\n  timestamp: new Date().toISOString(),\n  system: {\n    status: 'active',\n    clientType: $workflow.staticData.clientType || 'unknown',\n    circuitBreakerStatus: $workflow.staticData.circuitBreakerTripped || false\n  },\n  market: {\n    currentPrice: $workflow.staticData.currentPrice || 'N/A',\n    openingPrice: $workflow.staticData.openingPrice || 'N/A',\n    percentChange: $workflow.staticData.percentChange || 0,\n    lastPriceDate: $workflow.staticData.lastPriceDate || 'N/A'\n  },\n  trading: {\n    lastTradeDate: $workflow.staticData.lastTradeDate || 'None',\n    canTradeToday: $workflow.staticData.lastTradeDate !== new Date().toDateString()\n  },\n  statistics: {\n    totalTrades: ($workflow.staticData.tradeHistory || []).length,\n    validationFailures: ($workflow.staticData.validationFailures || []).length,\n    errorCount: ($workflow.staticData.errorLog || []).length\n  }\n};\n\nreturn [{ json: systemStatus }];"
+      },
+      "id": "4b3a69b8-ba7b-4e15-b86a-d519c9a2eefd",
+      "name": "Status Aggregator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -784,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "cdc7d840-2972-4fef-988a-1319c02e6e51",
+      "name": "Return Status",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -32
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-25T02:19:00.000Z",
+  "versionId": "e38b03cf-3da8-4ba7-97b4-f44bdb776dd5"
+}
