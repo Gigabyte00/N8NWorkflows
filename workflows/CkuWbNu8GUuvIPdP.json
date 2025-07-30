@@ -1,0 +1,19 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-07-27T00:12:55.590Z",
+  "id": "CkuWbNu8GUuvIPdP",
+  "isArchived": true,
+  "meta": null,
+  "name": "Google Flights",
+  "nodes": [],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-27T10:20:42.000Z",
+  "versionId": "131fc56e-8cf1-4526-8424-42bffb859b06"
+}
