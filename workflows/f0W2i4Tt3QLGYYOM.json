@@ -1,0 +1,321 @@
+{
+  "active": false,
+  "connections": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Create file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "GitHub Edit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Files": {
+      "main": [
+        [
+          {
+            "node": "Transform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform": {
+      "main": [
+        [
+          {
+            "node": "Download Raw Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "transform": {
+      "main": [
+        [
+          {
+            "node": "Get workflow data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get workflows": {
+      "main": [
+        [
+          {
+            "node": "transform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily at 23:59": {
+      "main": [
+        [
+          {
+            "node": "Get workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get workflow data": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Raw Content": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-30T10:32:48.743Z",
+  "id": "f0W2i4Tt3QLGYYOM",
+  "isArchived": true,
+  "meta": {
+    "templateId": "1222"
+  },
+  "name": "Backup workflows to GitHub",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": "YOUR_USERNAME",
+        "repository": "REPO_NAME",
+        "filePath": "={{$json[\"data\"][\"name\"]}}.json",
+        "fileContent": "={{JSON.stringify($json[\"data\"])}}",
+        "commitMessage": "=[N8N Backup] {{$json.data[\"name\"]}} ({{new Date(Date.now()).toLocaleDateString()}})"
+      },
+      "name": "GitHub Edit",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1584,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "5f284d66-4716-472c-b57e-4e9172be4abc",
+      "webhookId": "a58433e4-1ef7-4a13-9cf3-be1034ea5d2a"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": "YOUR_USERNAME",
+        "repository": "REPO",
+        "filePath": "/",
+        "asBinaryProperty": false,
+        "additionalParameters": {}
+      },
+      "name": "Get Files",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        592,
+        448
+      ],
+      "executeOnce": true,
+      "typeVersion": 1,
+      "alwaysOutputData": false,
+      "id": "e9cc529b-e5d1-461a-bffa-d7a405babae5",
+      "webhookId": "2a07ea93-c6d8-4bcf-9c68-bfcf07bac274"
+    },
+    {
+      "parameters": {
+        "functionCode": "return items[0].json.map(item => {\n  return {\n    json: item\n  }\n});\n"
+      },
+      "name": "Transform",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        800,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "29f1e484-241e-4b6f-a55b-5dcb2c4d2ce1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": "YOUR_USERNAME",
+        "repository": "REPO",
+        "filePath": "={{$json[\"data\"][\"name\"]}}.json",
+        "fileContent": "={{JSON.stringify($node['Merge'].json[\"data\"])}}",
+        "commitMessage": "=[N8N Backup] {{$json.data[\"name\"]}}.json ({{new Date(Date.now()).toLocaleDateString()}})"
+      },
+      "name": "Create file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1632,
+        224
+      ],
+      "typeVersion": 1,
+      "id": "54368411-a410-43b8-a3b0-8808620407fd",
+      "webhookId": "54987b68-77b0-42b5-9419-5fa3ea977fe6"
+    },
+    {
+      "parameters": {
+        "mode": "removeKeyMatches",
+        "propertyName1": "data.name",
+        "propertyName2": "data.name"
+      },
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1328,
+        224
+      ],
+      "typeVersion": 1,
+      "id": "da371b2d-c82b-4b40-b41b-e6ba0f7cd6f9"
+    },
+    {
+      "parameters": {
+        "authentication": "basicAuth",
+        "url": "https://n8n.srv914094.hstgr.cloud/rest/workflows",
+        "options": {}
+      },
+      "name": "Get workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        592,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "6f069809-5792-4169-a664-1f14c56a6003",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "QQnX5jKWCZ5IPSY9",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "basicAuth",
+        "url": "=http://localhost:5678/rest/workflows/{{$json[\"id\"]}}",
+        "options": {}
+      },
+      "name": "Get workflow data",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        992,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "663beadb-c50a-4bd7-a98b-af941dd7849a"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "={{$json[\"download_url\"]}}",
+        "responseFormat": "string",
+        "options": {}
+      },
+      "name": "Download Raw Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        992,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "f2d4ecdb-e270-4c27-bd4d-9b6654431b76"
+    },
+    {
+      "parameters": {
+        "functionCode": "const newItems = [];\nfor (item of items[0].json.data) {\n  newItems.push({json: item});\n}\nreturn newItems;"
+      },
+      "name": "transform",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        784,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "f3b98ed0-1052-47c0-ab59-46ead663e82c"
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 23,
+              "minute": 59
+            }
+          ]
+        }
+      },
+      "name": "Daily at 23:59",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "11d39ed0-5159-4e67-a2fb-b54e458b7915"
+    },
+    {
+      "parameters": {
+        "mode": "removeKeyMatches",
+        "propertyName1": "data.updatedAt",
+        "propertyName2": "data.updatedAt"
+      },
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1360,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "cf9f0e1e-57a5-4da4-b393-b3cd4e1eaf46"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-30T10:50:51.000Z",
+  "versionId": "85469698-3a37-419a-a330-fb5f3ec56d1a"
+}
