@@ -1,0 +1,232 @@
+{
+  "active": false,
+  "connections": {
+    "Set Currency": {
+      "main": [
+        [
+          {
+            "node": "Convert Currency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Report: Prepare": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Currency": {
+      "main": [
+        [
+          {
+            "node": "Report: Prepare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Currency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-27T10:25:23.573Z",
+  "id": "IwbU76YLc9OZfn2q",
+  "isArchived": false,
+  "meta": {
+    "templateId": "6185"
+  },
+  "name": "Scheduled Currency Exchange Rate Updates to Telegram with Exchange Rate API",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "8a30ec34-036d-4b20-b434-1e2d6cd27c98",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input: JSON from exchangerate-api.com\nconst data = $json;\nconst baseCode = data.base_code; // e.g., 'EGP'\nconst rates = data.rates;\nconst lastUpdate = new Date(data.time_last_update_utc).toLocaleDateString('en-US', {\n  month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true\n});\n\n// 🎯 Choose which currencies you want to see in the report!\nconst targets = [\n  { code: 'USD', emoji: '🇺🇸' },\n  { code: 'EUR', emoji: '🇪🇺' },\n  { code: 'GBP', emoji: '🇬🇧' },\n  { code: 'SAR', emoji: '🇸🇦' },\n  { code: 'AED', emoji: '🇦🇪' },\n];\n\n// ✍️ Build the report message for Telegram\nlet report = `<b>💱 Currency Exchange Rates</b>\\n\\n`;\n\nfor (const target of targets) {\n  const rate = rates[target.code];\n  if (rate) {\n    // Calculate 1 of the target currency = ? of the base currency\n    const inverseRate = (1 / rate).toFixed(2);\n    report += `${target.emoji} 1 ${target.code} = <b>${inverseRate} ${baseCode}</b>\\n`;\n  }\n}\n\nreport += `\\n<i>Last updated: ${lastUpdate}</i>`;\n\n// ✅ Return the text for the next node\nreturn [{\n  json: {\n    telegram_text: report\n  }\n}];"
+      },
+      "id": "7082fdcf-2877-4f36-b90a-2178ca1505a4",
+      "name": "Report: Prepare",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1296,
+        240
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Set Currency').item.json.telegram_chat_id }}",
+        "text": "={{ $json.telegram_text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "a6a78262-ed4e-4ecd-8fc9-7815548d1838",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1616,
+        240
+      ],
+      "webhookId": "6cad3897-95a7-4b25-8fcb-d1c6aac04aa2",
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "## Set inputs \n- currency",
+        "height": 240,
+        "width": 220,
+        "color": 5
+      },
+      "id": "0cbfe028-2702-48fa-9370-a7e218e4aa79",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        592,
+        160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Report",
+        "height": 240,
+        "width": 220,
+        "color": 3
+      },
+      "id": "7a41155a-e736-405e-bb18-3203fdcdf3dd",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1232,
+        160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Send",
+        "height": 240,
+        "width": 220,
+        "color": 6
+      },
+      "id": "b9bcc84e-b758-4309-b160-1d7d435e86ca",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1552,
+        160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "=https://open.er-api.com/v6/latest/{{ $json.currency }}",
+        "options": {}
+      },
+      "id": "b8c88e6d-7a4c-417b-a4e8-1533ebab27b5",
+      "name": "Convert Currency",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        976,
+        240
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Currrency",
+        "height": 240,
+        "width": 220,
+        "color": 3
+      },
+      "id": "1506df90-1c50-4744-b776-ff99e2b0d958",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        912,
+        160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b9f4869a-2059-4b09-84e3-26c7d1e95d30",
+              "name": "currency",
+              "type": "string",
+              "value": "=EGP"
+            },
+            {
+              "id": "593d886f-6c7b-4338-a057-46f2c57a041e",
+              "name": "to_currencies",
+              "type": "string",
+              "value": "=USD,AED,SAR"
+            },
+            {
+              "id": "c58b12b1-b70b-451e-b519-ffb4602c2c9d",
+              "name": "telegram_chat_id",
+              "type": "string",
+              "value": "={{ $env.telegram_chat_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c90ab53c-8d8a-41b5-86e8-5136e81e6d96",
+      "name": "Set Currency",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        656,
+        240
+      ],
+      "typeVersion": 3.4
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-27T10:25:23.573Z",
+  "versionId": "a73aa50b-53de-45d5-88f6-aebffe3b7424"
+}
