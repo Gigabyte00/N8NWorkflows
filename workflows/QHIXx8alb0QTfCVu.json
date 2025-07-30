@@ -1,0 +1,427 @@
+{
+  "active": false,
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "🤖 Agent: Scrape & Analyze Campaign Performance",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 LLM: Summarize & Format": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🤖 Agent: Scrape & Analyze Campaign Performance",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⏰ Daily Campaign Check Trigger": {
+      "main": [
+        [
+          {
+            "node": "✏️ Set Campaign Input Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✏️ Set Campaign Input Fields": {
+      "main": [
+        [
+          {
+            "node": "🤖 Agent: Scrape & Analyze Campaign Performance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔎 IF: Open ≥30% & CTR <10%?": {
+      "main": [
+        [
+          {
+            "node": "📧 Send Follow-Up Engagement Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🚫 Skip — No Action Needed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🌐 Bright Data MCP: Scrape Report": {
+      "ai_tool": [
+        [
+          {
+            "node": "🤖 Agent: Scrape & Analyze Campaign Performance",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 Agent: Scrape & Analyze Campaign Performance": {
+      "main": [
+        [
+          {
+            "node": "🔎 IF: Open ≥30% & CTR <10%?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-17T19:11:53.694Z",
+  "id": "QHIXx8alb0QTfCVu",
+  "isArchived": false,
+  "meta": {
+    "templateId": "5953"
+  },
+  "name": "Automate Email Campaign Analysis & Smart Follow-ups with Bright Data & OpenAI",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "75f14163-7400-49fe-aeb9-1f983dfe0c5e",
+      "name": "⏰ Daily Campaign Check Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        2288,
+        1424
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "04df454e-d477-4dd4-a029-2c97cfd1bf8f",
+              "name": "url",
+              "type": "string",
+              "value": "=https://www.mailchimp.com/campaigns/123/report"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3d85c239-8871-48ce-aecc-581a4a4be75c",
+      "name": "✏️ Set Campaign Input Fields",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2512,
+        1424
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "id": "197f6678-606d-4e9d-91b9-2ed48fe6799c",
+      "name": "🤖 Agent: Scrape & Analyze Campaign Performance",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        2880,
+        1424
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "0fa379ec-3e22-4f69-97dc-c45e244121c6",
+      "name": "🧠 LLM: Summarize & Format",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        2848,
+        1728
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {},
+      "id": "d1a27651-f1b3-412e-8452-563eba14c7d0",
+      "name": "🌐 Bright Data MCP: Scrape Report",
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "position": [
+        3040,
+        1728
+      ],
+      "typeVersion": 1,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "d5c41a60-cadf-47a6-9685-9bead865346d",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              },
+              "leftValue": "={{ $json.open_rate }}",
+              "rightValue": 20
+            },
+            {
+              "id": "7a251b0b-a122-418d-8b0c-6714ebfa6018",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              },
+              "leftValue": "={{ $json.ctr }}",
+              "rightValue": 130
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fb814c29-e412-4332-ae43-b5f8ce4f0783",
+      "name": "🔎 IF: Open ≥30% & CTR <10%?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        3456,
+        1424
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "sendTo": "shahkar.genai@gmail.com",
+        "subject": "Did you miss this? Here’s something special for you!",
+        "emailType": "text",
+        "message": "Hi [First Name],  \nWe noticed you opened our recent email — thank you for staying connected! \n🙌 But we think you might have missed the best part…  \n👉 [Big Benefit or Offer — e.g., “Get 20% off your next order — today only!”]  \nWe don’t want you to miss out — just click below and grab your exclusive [deal / resource / upgrade].  \n[CTA Button: “Claim Your Offer”]  Still not sure? We’re here to help if you have any questions. Just hit reply — we love hearing from you!  Talk soon, [Your Name] [Your Company]",
+        "options": {}
+      },
+      "id": "b77a5854-6882-47ac-8dba-9af0bdcc0e1f",
+      "name": "📧 Send Follow-Up Engagement Email",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        3696,
+        1328
+      ],
+      "webhookId": "0fd0b382-f827-4262-a3de-4df28f33fb10",
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {},
+      "id": "1259660d-e04c-4708-9319-22749360bdc3",
+      "name": "🚫 Skip — No Action Needed",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        3696,
+        1520
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 🎯 **🔹 SECTION 1: Schedule & Prepare Inputs**\n\n### ✅ **Nodes in this Section**\n\n| Node | Name                             |\n| ---- | -------------------------------- |\n| ⏰    | **Daily Campaign Check Trigger** |\n| ✏️   | **Set Campaign Input Fields**    |\n\n---\n\n### 💡 **What Happens Here**\n\n* **⏰ Daily Campaign Check Trigger:**\n  This node automatically **starts the workflow on a schedule** — for example, every morning at 9 AM.\n  It makes sure you **don’t have to run it manually** every time. The goal is to check your email campaign performance **regularly and consistently**.\n\n* **✏️ Set Campaign Input Fields:**\n  This node **defines any input values** that your Agent needs.\n  For example:\n\n  * Campaign ID\n  * ESP URL\n  * Date range\n  * Any dynamic variables\n\n  It acts like **filling in a form** that the rest of the workflow will use.\n  You can **edit it easily** without changing the whole workflow.\n\n---\n\n### 🎯 **Why It’s Important**\n\n✅ Automates the whole thing on autopilot.\n✅ Ensures the Agent always has the **right data**.\n✅ Makes the workflow easy to maintain for non-tech users — just change a value in **Edit Fields**, done!\n\n---\n\n---\n\n",
+        "height": 1360,
+        "width": 420,
+        "color": 6
+      },
+      "id": "6e673900-d27b-4aba-be1d-8d9149fa6ceb",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2240,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 🤖 **🔹 SECTION 2: Scrape & Analyze with AI Agent**\n\n### ✅ **Nodes in this Section**\n\n| Node | Name                                             |\n| ---- | ------------------------------------------------ |\n| 🤖   | **Agent: Scrape & Analyze Campaign Performance** |\n| 🧠   | **LLM: Summarize & Format**                      |\n| 🌐   | **Bright Data MCP: Scrape Report**               |\n| 🗂️  | **Parse Scrape Output**                          |\n\n---\n\n### 💡 **What Happens Here**\n\n* **🤖 Agent: Scrape & Analyze Campaign Performance**\n  This is your **AI Agent** — it does the smart part:\n\n  * Talks to the **Bright Data MCP Tool** to scrape the ESP report page.\n  * Uses an **LLM** (OpenAI Chat Model) to process the scraped data.\n  * Passes the result to an **Output Parser** to turn messy text into clean, structured data.\n\n* **🌐 Bright Data MCP: Scrape Report**\n  Bright Data logs in, navigates to your campaign report page, and **scrapes live open/click numbers**.\n\n* **🧠 LLM: Summarize & Format**\n  The Chat Model turns raw scraped info into easy-to-read Markdown or JSON.\n  This is like having a mini data analyst!\n\n* **🗂️ Parse Scrape Output**\n  This node extracts the final numbers (open rate, CTR, bounces) so the logic can understand them.\n\n---\n\n### 🎯 **Why It’s Important**\n\n✅ You don’t have to log in manually to get reports.\n✅ The AI cleans up messy scraped data.\n✅ Makes follow-up decisions possible without human effort.\n✅ Works for **any ESP** — if the layout changes, just adjust the scraper.\n\n---\n\n---\n\n",
+        "height": 1480,
+        "width": 420,
+        "color": 3
+      },
+      "id": "d722faa7-9304-4145-9e22-f90b71b02053",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2800,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 📈 **🔹 SECTION 3: Decide & Act Automatically**\n\n### ✅ **Nodes in this Section**\n\n| Node | Name                                |\n| ---- | ----------------------------------- |\n| 🔎   | **IF: Open ≥30% & CTR <10%?**       |\n| 📧   | **Send Follow-Up Engagement Email** |\n| 🚫   | **Skip — No Action Needed**         |\n\n---\n\n### 💡 **What Happens Here**\n\n* **🔎 IF: Open ≥30% & CTR <10%?**\n  This node checks:\n\n  * Is the open rate good? (≥30%)\n  * But is the click-through rate low? (<10%)\n    If **true**, it triggers follow-up to re-engage the audience.\n\n* **📧 Send Follow-Up Engagement Email**\n  If the condition is true, this node sends a **personalized follow-up email** automatically.\n  For example: “Hey, you opened but didn’t click — here’s your special offer!”\n\n* **🚫 Skip — No Action Needed**\n  If the condition is **false** (e.g. CTR is healthy), do nothing. The workflow ends safely.\n\n---\n\n",
+        "height": 1100,
+        "width": 420,
+        "color": 5
+      },
+      "id": "031503cb-3fa4-46b6-9b57-529b10553ec2",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3408,
+        592
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## I’ll receive a tiny commission if you join Bright Data through this link—thanks for fueling more free content!\n\n### https://get.brightdata.com/1tndi4600b25",
+        "height": 240,
+        "width": 380,
+        "color": 7
+      },
+      "id": "4502ee4c-219e-4495-b4ff-c8b3beec55e8",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3920,
+        512
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "=======================================\n            WORKFLOW ASSISTANCE\n=======================================\nFor any questions or support, please contact:\n    Yaron@nofluff.online\n\nExplore more tips and tutorials here:\n   - YouTube: https://www.youtube.com/@YaronBeen/videos\n   - LinkedIn: https://www.linkedin.com/in/yaronbeen/\n=======================================\n",
+        "height": 320,
+        "width": 1300,
+        "color": 4
+      },
+      "id": "07751162-2ade-4591-93bc-a3dc2414553d",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Dynamic Email Re-Engagement Automation\n---\n\n## 🎯 **🔹 SECTION 1: Schedule & Prepare Inputs**\n\n### ✅ **Nodes in this Section**\n\n| Node | Name                             |\n| ---- | -------------------------------- |\n| ⏰    | **Daily Campaign Check Trigger** |\n| ✏️   | **Set Campaign Input Fields**    |\n\n---\n\n### 💡 **What Happens Here**\n\n* **⏰ Daily Campaign Check Trigger:**\n  This node automatically **starts the workflow on a schedule** — for example, every morning at 9 AM.\n  It makes sure you **don’t have to run it manually** every time. The goal is to check your email campaign performance **regularly and consistently**.\n\n* **✏️ Set Campaign Input Fields:**\n  This node **defines any input values** that your Agent needs.\n  For example:\n\n  * Campaign ID\n  * ESP URL\n  * Date range\n  * Any dynamic variables\n\n  It acts like **filling in a form** that the rest of the workflow will use.\n  You can **edit it easily** without changing the whole workflow.\n\n---\n\n### 🎯 **Why It’s Important**\n\n✅ Automates the whole thing on autopilot.\n✅ Ensures the Agent always has the **right data**.\n✅ Makes the workflow easy to maintain for non-tech users — just change a value in **Edit Fields**, done!\n\n---\n\n---\n\n## 🤖 **🔹 SECTION 2: Scrape & Analyze with AI Agent**\n\n### ✅ **Nodes in this Section**\n\n| Node | Name                                             |\n| ---- | ------------------------------------------------ |\n| 🤖   | **Agent: Scrape & Analyze Campaign Performance** |\n| 🧠   | **LLM: Summarize & Format**                      |\n| 🌐   | **Bright Data MCP: Scrape Report**               |\n| 🗂️  | **Parse Scrape Output**                          |\n\n---\n\n### 💡 **What Happens Here**\n\n* **🤖 Agent: Scrape & Analyze Campaign Performance**\n  This is your **AI Agent** — it does the smart part:\n\n  * Talks to the **Bright Data MCP Tool** to scrape the ESP report page.\n  * Uses an **LLM** (OpenAI Chat Model) to process the scraped data.\n  * Passes the result to an **Output Parser** to turn messy text into clean, structured data.\n\n* **🌐 Bright Data MCP: Scrape Report**\n  Bright Data logs in, navigates to your campaign report page, and **scrapes live open/click numbers**.\n\n* **🧠 LLM: Summarize & Format**\n  The Chat Model turns raw scraped info into easy-to-read Markdown or JSON.\n  This is like having a mini data analyst!\n\n* **🗂️ Parse Scrape Output**\n  This node extracts the final numbers (open rate, CTR, bounces) so the logic can understand them.\n\n---\n\n### 🎯 **Why It’s Important**\n\n✅ You don’t have to log in manually to get reports.\n✅ The AI cleans up messy scraped data.\n✅ Makes follow-up decisions possible without human effort.\n✅ Works for **any ESP** — if the layout changes, just adjust the scraper.\n\n---\n\n---\n\n## 📈 **🔹 SECTION 3: Decide & Act Automatically**\n\n### ✅ **Nodes in this Section**\n\n| Node | Name                                |\n| ---- | ----------------------------------- |\n| 🔎   | **IF: Open ≥30% & CTR <10%?**       |\n| 📧   | **Send Follow-Up Engagement Email** |\n| 🚫   | **Skip — No Action Needed**         |\n\n---\n\n### 💡 **What Happens Here**\n\n* **🔎 IF: Open ≥30% & CTR <10%?**\n  This node checks:\n\n  * Is the open rate good? (≥30%)\n  * But is the click-through rate low? (<10%)\n    If **true**, it triggers follow-up to re-engage the audience.\n\n* **📧 Send Follow-Up Engagement Email**\n  If the condition is true, this node sends a **personalized follow-up email** automatically.\n  For example: “Hey, you opened but didn’t click — here’s your special offer!”\n\n* **🚫 Skip — No Action Needed**\n  If the condition is **false** (e.g. CTR is healthy), do nothing. The workflow ends safely.\n\n---\n\n### 🎯 **Why It’s Important**\n\n✅ Takes action **only when needed**, saving time.\n✅ Boosts click rates without extra manual work.\n✅ Protects your audience from spam by not sending unnecessary follow-ups.\n\n---\n\n## 🌟 **✨ Why This Whole Flow is Powerful**\n\n* Runs daily — **no manual checks**.\n* Scrapes live data — **no API? No problem!**\n* Uses AI to process messy data — **no coding required!**\n* Makes smart decisions — **no human micromanagement**.\n* Sends the right email to the right audience at the right time — **better engagement, better ROI!**\n\n---\n\n",
+        "height": 3118,
+        "width": 1289,
+        "color": 4
+      },
+      "id": "6c9e1f76-b6d0-4915-8f05-ada92abfcd89",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        592
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "237aeaf4-64f1-411b-a013-9209f46fa320",
+      "name": "Auto-fixing Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "position": [
+        3200,
+        1728
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "f86d1724-c0c3-4820-9699-44f2d4101054",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        3152,
+        1984
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"campaign_name\": \"Summer Promo Blast\",\n  \"campaign_id\": \"123456789\",\n  \"date_sent\": \"2025-06-29\",\n  \"unique_opens\": 1230,\n  \"total_opens\": 1590,\n  \"open_rate\": 47,\n  \"unique_clicks\": 530,\n  \"total_clicks\": 670,\n  \"ctr\": 20,\n  \"soft_bounces\": 25,\n  \"hard_bounces\": 10,\n  \"bounce_rate\": 1.8,\n  \"unsubscribed\": 15,\n  \"unsubscribe_rate\": 0.6\n}\n"
+      },
+      "id": "41e646ea-effa-40c0-8513-7fecd83762ee",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        3328,
+        1984
+      ],
+      "typeVersion": 1.2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-17T19:11:53.694Z",
+  "versionId": "bec5a6fc-cb24-44f1-ac86-cbb2f7b78ded"
+}
