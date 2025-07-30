@@ -1,0 +1,508 @@
+{
+  "active": false,
+  "connections": {
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "list": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleaned ##": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Topic Wise information.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Website Name": {
+      "main": [
+        [
+          {
+            "node": "HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Topic Wise information.",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "list",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Topic Wise information.": {
+      "main": [
+        [
+          {
+            "node": "Cleaned ##",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-17T19:10:48.774Z",
+  "id": "laM47DPuIUp33ksm",
+  "isArchived": false,
+  "meta": {
+    "templateId": "5657"
+  },
+  "name": "Website Content Scraper & SEO Keyword Extractor with GPT-4o-mini and Airtable",
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "59597272-acf0-426f-881f-2a82f0b60151",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        1408,
+        480
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "formTitle": "Website Name",
+        "formDescription": "=Website Scraper",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Website Name ",
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "buttonLabel": "Submit"
+        }
+      },
+      "id": "95607ab2-d841-4394-b31b-d9b28dfb5d41",
+      "name": "Website Name",
+      "type": "n8n-nodes-base.formTrigger",
+      "position": [
+        368,
+        240
+      ],
+      "webhookId": "3e762442-715e-47e1-a65e-ae92085857ae",
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "id": "59294fd4-98ad-40b5-951c-7df706064d2f",
+      "name": "Wait1",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        2576,
+        240
+      ],
+      "webhookId": "783f92c4-5078-40d2-ae9f-b31664b08086",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "cleanedData",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "id": "4305bade-cdeb-4ea7-b5c0-27a2878538d4",
+      "name": "Split Out1",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        1152,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "cleaned",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "id": "69c1eaa7-586a-4b5d-94b8-7a1b39a9eb3a",
+      "name": "Split Out2",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        2416,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "mode": "list",
+          "value": "appxR9kySQVhhjSZ9",
+          "cachedResultUrl": "https://airtable.com/appxR9kySQVhhjSZ9",
+          "cachedResultName": "website"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": "tblirvzTvL2ShdbR1",
+          "cachedResultUrl": "https://airtable.com/appxR9kySQVhhjSZ9/tblirvzTvL2ShdbR1",
+          "cachedResultName": "Table 1"
+        },
+        "columns": {
+          "value": {
+            "Data": "={{ $json.cleaned }}",
+            "Status": "Done",
+            "Keyword": "={{ $json.output }}",
+            "Website Name": "={{ $('Website Name').item.json['Website Name SEO'] }}"
+          },
+          "schema": [
+            {
+              "id": "id",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "readOnly": true,
+              "required": false,
+              "displayName": "id",
+              "defaultMatch": true
+            },
+            {
+              "id": "Website Name",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "readOnly": false,
+              "required": false,
+              "displayName": "Website Name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "readOnly": false,
+              "required": false,
+              "displayName": "Data",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Keyword",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "readOnly": false,
+              "required": false,
+              "displayName": "Keyword",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "type": "options",
+              "display": true,
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "removed": false,
+              "readOnly": false,
+              "required": false,
+              "displayName": "Status",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "Data"
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "c2049eb9-3c1c-4339-82c8-8a3f026280ee",
+      "name": "Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "position": [
+        3328,
+        304
+      ],
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "1025ab64-2301-4956-8d29-4a8baf28fd5a",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        2560,
+        688
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql"
+      },
+      "id": "4385b878-8b56-4064-b903-e435e309fb94",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        3008,
+        304
+      ],
+      "typeVersion": 3.1
+    },
+    {
+      "parameters": {
+        "content": "## READING WEBSITE \nuser input"
+      },
+      "id": "b091d9c9-53f7-412f-bdb1-739f3cb6e6f8",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        576,
+        48
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## cleaned HTML code\n",
+        "width": 150
+      },
+      "id": "6c6541b6-78a4-49ab-9ae6-de9dc49d602f",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        48
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Topic wise information.\nwebsite name."
+      },
+      "id": "be1c00ee-f688-486d-bba8-deba80c6c6cf",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1392,
+        48
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "={{ $json['Website Name SEO'] }}",
+        "options": {}
+      },
+      "id": "e9e5af64-e6ec-4881-aa82-ee206e702adf",
+      "name": "HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        640,
+        240
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $(\"HTTP\").all()[0]?.json?.data;\n\nfunction extractTextFromHTML(html) {\n  const cleanedHTML = html\n    .replace(/<style[\\s\\S]*?>[\\s\\S]*?<\\/style>/gi, \"\")\n    .replace(/<[^>]+>/g, \"\")\n    .replace(/\\s+/g, \" \")\n    .trim();\n\n  return cleanedHTML;\n}\n\nconst cleanedData = extractTextFromHTML(data);\n\nreturn { cleanedData };\n"
+      },
+      "id": "ea6cd1c6-0a59-459f-b648-0cc91f5551c4",
+      "name": "HTML",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        912,
+        240
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Website Name').item.json['Website Name SEO'] }}",
+        "options": {
+          "systemMessage": "={{ $json.cleanedData }}\n\nfind it topic wise information.\n"
+        }
+      },
+      "id": "686f3bd7-fa12-4927-8c6e-60a53fb82aff",
+      "name": "Topic Wise information.",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1392,
+        240
+      ],
+      "typeVersion": 1.8
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.cleaned }}",
+        "options": {
+          "systemMessage": "=only for list number of 90 keyword data \"\"\"Important Keyword List for SEO\"\"\"\n"
+        }
+      },
+      "id": "2b2ee97d-9771-4842-94db-0538254bc5ec",
+      "name": "list",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        2560,
+        512
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json[\"output\"]; // Replace \"text\" with your actual field name\nconst cleaned = input\n  .replace(/\\*\\*/g, '')        // Remove all double asterisks **\n  .replace(/^###\\s?/gm, '')  // Remove all ### at the start of lines\n  .replace(/^##\\s?/gm, '');   // Remove all ## at the start of lines\n\n\nreturn {\n  json: {\n    cleaned\n  }\n};\n"
+      },
+      "id": "51d9ec4a-84b0-4cb2-bab4-d468eaf4b5a3",
+      "name": "Cleaned ##",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1856,
+        240
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-17T19:10:48.774Z",
+  "versionId": "11b69973-d29e-4040-b630-2e8c6b783a8b"
+}
