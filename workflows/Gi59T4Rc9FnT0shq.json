@@ -1,0 +1,254 @@
+{
+  "active": false,
+  "connections": {
+    "Map": {
+      "main": [
+        [
+          {
+            "node": "Get Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "FunctionItem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FunctionItem": {
+      "main": [
+        [
+          {
+            "node": "Move Binary Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Workflow": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Move Binary Data": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Workflow List": {
+      "main": [
+        [
+          {
+            "node": "Map",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Daily at 2:30am": {
+      "main": [
+        [
+          {
+            "node": "Get Workflow List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Get Workflow List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T10:18:37.817Z",
+  "id": "Gi59T4Rc9FnT0shq",
+  "isArchived": false,
+  "meta": {
+    "templateId": "1150"
+  },
+  "name": "Backup n8n workflows to Google Drive",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "6d283f20-3ce5-4854-9019-32e63b19de29"
+    },
+    {
+      "parameters": {
+        "mode": "mergeByIndex"
+      },
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1008,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "4954ebbb-14d9-4cf4-abb0-8ac06a80417a"
+    },
+    {
+      "parameters": {
+        "mode": "jsonToBinary",
+        "options": {
+          "useRawData": false
+        }
+      },
+      "name": "Move Binary Data",
+      "type": "n8n-nodes-base.moveBinaryData",
+      "position": [
+        1312,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "4a44640c-4780-403b-9e56-a173553282c3"
+    },
+    {
+      "parameters": {
+        "functionCode": "return items[0].json.data.map(item => {\n  return {json: item}\n});"
+      },
+      "name": "Map",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        768,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "cdb3f312-d4a3-4d54-8f42-d39fce0c2fad"
+    },
+    {
+      "parameters": {
+        "authentication": "basicAuth",
+        "url": "=http://localhost:5678/rest/workflows/{{$node[\"Map\"].data[\"id\"]}}",
+        "options": {}
+      },
+      "name": "Get Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        880,
+        544
+      ],
+      "notesInFlow": false,
+      "typeVersion": 1,
+      "id": "06467b04-745c-4cc9-959f-d840fa16376f",
+      "notes": "Don't forget to add your credentials for your n8n instance in this Node. Use Basic Auth for this. "
+    },
+    {
+      "parameters": {
+        "authentication": "basicAuth",
+        "url": "http://localhost:5678/rest/workflows",
+        "options": {}
+      },
+      "name": "Get Workflow List",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        576,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "4dc6d11f-3fab-4330-a2c5-12023f56bfac",
+      "notes": "Don't forget to add your credentials for your n8n instance in this Node. Use Basic Auth for this. "
+    },
+    {
+      "parameters": {
+        "functionCode": "item = item.data;\nreturn item;"
+      },
+      "name": "FunctionItem",
+      "type": "n8n-nodes-base.functionItem",
+      "position": [
+        1168,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "013dd259-b37d-4f7f-b37e-7cbb3d29de0e"
+    },
+    {
+      "parameters": {
+        "binaryData": true,
+        "name": "={{$node[\"Merge\"].data[\"name\"]}}.json",
+        "resolveData": true,
+        "parents": [
+          "Delete this text and put id for folder you want to upload into in this field. The folder ID can be found by opening the folder in your browser and copying the portion after https://drive.google.com/drive/u/0/folders/"
+        ],
+        "options": {}
+      },
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1504,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "d555a5c9-f1fc-47b8-9cfe-508592d1b9f7"
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 2,
+              "minute": 30
+            }
+          ]
+        }
+      },
+      "name": "Run Daily at 2:30am",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        384,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "dab730f8-a44f-47eb-970c-6fc4276b35b2"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T10:18:37.817Z",
+  "versionId": "6e7142d1-643b-465d-b853-025e75c3bb61"
+}
