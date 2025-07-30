@@ -1,0 +1,255 @@
+{
+  "active": false,
+  "connections": {
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ScrapegraphAI": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "ScrapegraphAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-30T09:26:15.465Z",
+  "id": "yzmsAfGDC4oaOYSe",
+  "isArchived": false,
+  "meta": {
+    "templateId": "6313"
+  },
+  "name": "Track Real-time Stock Prices with Yahoo Finance, ScrapegraphAI, and Google Sheets 2",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "2c187503-6fb2-4b8b-92fe-f8e997fd5559",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        608,
+        608
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {},
+      "id": "ce790220-6486-4528-a831-73443107a7a3",
+      "name": "ScrapegraphAI",
+      "type": "n8n-nodes-scrapegraphai.scrapegraphAi",
+      "position": [
+        1296,
+        608
+      ],
+      "typeVersion": 1,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Sheet1"
+        },
+        "columns": {
+          "value": {},
+          "schema": [
+            {
+              "id": "symbol",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "symbol",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "current_price",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "current_price",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "change",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "change",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "change_percent",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "change_percent",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "volume",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "volume",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "market_cap",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "market_cap",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "autoMapInputData",
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "ae4d95c5-f352-415c-a65e-01dcd4290c61",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        2896,
+        608
+      ],
+      "typeVersion": 4.5
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the input data\nconst inputData = $input.all()[0].json;\n\n// Check if it's a single stock or multiple stocks\nif (inputData.result && inputData.result.stocks) {\n  // Multiple stocks format\n  const stocks = inputData.result.stocks;\n  return stocks.map(stock => ({\n    json: {\n      symbol: stock.symbol,\n      current_price: stock.current_price,\n      change: stock.change,\n      change_percent: stock.change_percent,\n      volume: stock.volume,\n      market_cap: stock.market_cap\n    }\n  }));\n} else if (inputData.result) {\n  // Single stock format - return as single item\n  return [{\n    json: {\n      symbol: inputData.result.symbol,\n      current_price: inputData.result.current_price,\n      change: inputData.result.change,\n      change_percent: inputData.result.change_percent,\n      volume: inputData.result.volume,\n      market_cap: inputData.result.market_cap\n    }\n  }];\n}"
+      },
+      "id": "223ba5e6-4bff-4a36-ba66-491002cacdbc",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        2048,
+        608
+      ],
+      "notesInFlow": true,
+      "typeVersion": 2,
+      "notes": "Hey this is where \nyou \nformat results "
+    },
+    {
+      "parameters": {
+        "content": "# Step 2: ScrapeGraphAI Node 🤖\n\nThis is the core node which will scrape the website that you want.\n\n## How to Use\n- Simply mention the website URL\n- Describe what you want to extract in natural language\n\n## Example\n- **Website**: `https://www.example.com`\n- **Instruction**: \"Extract all article titles and URLs from this news site\"",
+        "height": 530.4701664623029,
+        "width": 574.9363634768473,
+        "color": 5
+      },
+      "id": "575fba6b-dcc4-47df-8a4c-ab75d7a6a6ee",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1088,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Step 3: Format the response 🧱\n\nThis node will format the results for sheets.\n\n## What it does\n- Prepares data for Google Sheets compatibility\n- Each article becomes a separate row in sheets\n- Maintains all important metadata\n- Easy to filter and analyze data",
+        "height": 530.4701664623029,
+        "width": 574.9363634768473,
+        "color": 5
+      },
+      "id": "d8a8b5f8-653f-4a84-8953-de8ff9e37aa1",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1840,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Step 1: Trigger ⏱️\n\nThis trigger will invoke the workflow on the mentioned time.\n\n## Configuration Options\n- You can mention your custom time for trigger\n- Or even choose a different trigger",
+        "height": 530.4701664623029,
+        "width": 574.9363634768473,
+        "color": 5
+      },
+      "id": "2e906fc8-8057-4cf2-8537-0d1f563a145c",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Step 4: Google Sheets 📊\n\nThis node will save the formatted data to your Google Sheets.\n\n## What it does\n- Connects to your Google Sheets account\n- Appends new rows with scraped article data\n- Maintains data history and tracking\n\n## Configuration\n- Select your target spreadsheet\n- Map fields from the formatted data\n- Set operation to \"Append\" for new rows\n",
+        "height": 530.4701664623029,
+        "width": 574.9363634768473,
+        "color": 5
+      },
+      "id": "6a84d8fc-74a5-43a0-ad28-ef1690236e0e",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2592,
+        240
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-30T09:26:15.465Z",
+  "versionId": "e50030e0-816c-4a53-b086-5aeca0494992"
+}
