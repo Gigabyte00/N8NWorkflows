@@ -1,0 +1,310 @@
+{
+  "active": false,
+  "connections": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Report: Prepare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Price": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Currency": {
+      "main": [
+        [
+          {
+            "node": "Fetch Price",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Convert Currency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Report: Prepare": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Currency": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Currency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-27T10:25:37.147Z",
+  "id": "rJqyoatjAR4BZpnI",
+  "isArchived": false,
+  "meta": {
+    "templateId": "6178"
+  },
+  "name": "Automated Gold Price Tracker with Multiple Currency Conversion for Telegram 📈",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "8a30ec34-036d-4b20-b434-1e2d6cd27c98",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "jsCode": "/*\n  n8n Code Node – Gold Table v2 (Fixed Alignment + Thousand Separators)\n  IN  : same JSON payload\n  OUT : { telegram_text : \"<Markdown V2>\" }\n*/\n\nconst data = $json;\nconst meta = data.items[0];\nconst gPerOz = 31.1034768;\nconst usdGram = meta.xauPrice / gPerOz;\nconst rates = data.rates;\n\n// Fixed formatting function with correct column widths and thousand separators\nfunction fmt(n, w) {\n  const rounded = Math.round(n);\n  const formatted = rounded.toLocaleString('en-US'); // Adds thousand separators\n  return formatted.padStart(w, ' ');\n}\n\nfunction esc(txt) {\n  return txt.replace(/([_*[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\nconst targets = [\n  { flag: '🇪🇬', code: $('Set Currency').first().json.currency },\n  { flag: '🇺🇸', code: 'USD' },\n];\n\nlet rows = '';\nfor (const t of targets) {\n  const fx = rates[t.code] || 1;\n  const g24 = usdGram * fx;\n  \n  // Format each column with the exact width from the table structure\n  const currency = `${t.flag} ${t.code}`.padEnd(9, ' ');  // \"Cur\" column is 8 chars wide (updated)\n  const col24k = fmt(g24, 6);          // \"24k g\" column is 6 chars wide  \n  const col21k = fmt(g24 * 0.875, 6);  // \"21k g\" column is 6 chars wide\n  const col18k = fmt(g24 * 0.75, 6);   // \"18k g\" column is 6 chars wide\n  const col24oz = fmt(g24 * gPerOz, 8); // \"24k oz\" column is 8 chars wide\n  \n  rows += `│ ${currency} │ ${col24k} │ ${col21k} │ ${col18k} │ ${col24oz} │\\n`;\n}\n\nconst arrow = meta.pcXau >= 0 ? '🔺' : '🔻';\nconst pct = meta.pcXau.toFixed(2).replace('-', '');\n\nconst text = `🪙 *Gold per gram / oz*\n\\`\\`\\`\n┌──────────┬────────┬────────┬────────┬──────────┐\n│ Cur      │  24k g │  21k g │  18k g │  24k oz  │\n├──────────┼────────┼────────┼────────┼──────────┤\n${rows}└──────────┴────────┴────────┴────────┴──────────┘\n\\`\\`\\`\n${arrow} *${esc(pct)}\\\\%* _exrate\\\\-api_`;\n\nreturn [{ json: { telegram_text: text } }];"
+      },
+      "id": "7082fdcf-2877-4f36-b90a-2178ca1505a4",
+      "name": "Report: Prepare",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1568,
+        272
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Set Currency').item.json.telegram_chat_id }}",
+        "text": "={{ $json.telegram_text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "a6a78262-ed4e-4ecd-8fc9-7815548d1838",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1888,
+        272
+      ],
+      "webhookId": "6cad3897-95a7-4b25-8fcb-d1c6aac04aa2",
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "## Set inputs \n- currency",
+        "height": 240,
+        "width": 220,
+        "color": 5
+      },
+      "id": "0cbfe028-2702-48fa-9370-a7e218e4aa79",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        592,
+        160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Report",
+        "height": 240,
+        "width": 220,
+        "color": 3
+      },
+      "id": "7a41155a-e736-405e-bb18-3203fdcdf3dd",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1520,
+        192
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Send",
+        "height": 240,
+        "width": 220,
+        "color": 6
+      },
+      "id": "b9bcc84e-b758-4309-b160-1d7d435e86ca",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1840,
+        192
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://open.er-api.com/v6/latest/USD",
+        "options": {}
+      },
+      "id": "b8c88e6d-7a4c-417b-a4e8-1533ebab27b5",
+      "name": "Convert Currency",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        976,
+        532
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://data-asg.goldprice.org/dbXRates/USD",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 5000
+        }
+      },
+      "id": "d5000d8e-559e-4e23-a751-17af0ec75198",
+      "name": "Fetch Price",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        976,
+        80
+      ],
+      "retryOnFail": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Pricing",
+        "height": 240,
+        "width": 220,
+        "color": 3
+      },
+      "id": "c552222e-efc9-4c61-ba3c-f1a33d24765a",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        912,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Currrency",
+        "height": 240,
+        "width": 220,
+        "color": 3
+      },
+      "id": "1506df90-1c50-4744-b776-ff99e2b0d958",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        912,
+        352
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b9f4869a-2059-4b09-84e3-26c7d1e95d30",
+              "name": "currency",
+              "type": "string",
+              "value": "={{ $env.currency }}"
+            },
+            {
+              "id": "593d886f-6c7b-4338-a057-46f2c57a041e",
+              "name": "telegram_chat_id",
+              "type": "string",
+              "value": "={{ $env.telegram_chat_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c90ab53c-8d8a-41b5-86e8-5136e81e6d96",
+      "name": "Set Currency",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        656,
+        240
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "baa17bc3-0f3e-40a5-9488-41ec54f0291a",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1296,
+        272
+      ],
+      "typeVersion": 3.2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-27T10:25:37.147Z",
+  "versionId": "78e765f3-93eb-4208-a70f-567104b3c360"
+}
