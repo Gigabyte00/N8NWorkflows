@@ -1,0 +1,195 @@
+{
+  "active": false,
+  "connections": {
+    "Prepare SSH Variables\t": {
+      "main": [
+        [
+          {
+            "node": "Run Log Cleanup Commands via SSH\t",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Disk Alert Emails\t": {
+      "main": [
+        [
+          {
+            "node": "Extract Server IP from Email\t",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Server IP from Email\t": {
+      "main": [
+        [
+          {
+            "node": "Prepare SSH Variables\t",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-27T10:32:11.999Z",
+  "id": "p60arwgm4tpM0D3K",
+  "isArchived": false,
+  "meta": {
+    "templateId": "5406"
+  },
+  "name": "Automated Server Log Cleanup via Email Alerts with SSH - Nginx, Docker, System",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"disk\"]]"
+        }
+      },
+      "id": "8c1aac94-9e6a-4b14-a177-3a00644ea232",
+      "name": "Check Disk Alert Emails\t",
+      "type": "n8n-nodes-base.emailReadImap",
+      "position": [
+        400,
+        384
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "const subject = $input.first().json.subject;\n\nif (subject && (subject.toLowerCase().includes(\"disk-utilization\") || subject.toLowerCase().includes(\"disk utilization\"))) {\n  const ipMatch = subject.match(/(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}):9100/);\n  const server_ip = ipMatch ? ipMatch[1] : '';\n  return [{ json: { server_ip } }];\n} else {\n  // Stop workflow if subject doesn't match\n  return [];\n}"
+      },
+      "id": "025c2c15-f693-4b53-8433-4d641526d11a",
+      "name": "Extract Server IP from Email\t",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        608,
+        384
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "49c16fb1-4b84-46a7-bb50-5e1fa7f59664",
+              "name": "pwd",
+              "type": "string",
+              "value": "password"
+            },
+            {
+              "id": "c16557bd-7ef6-4049-a634-a5b207a92fd6",
+              "name": "server_user",
+              "type": "string",
+              "value": "user"
+            },
+            {
+              "id": "fd8c4253-8ab2-4094-9a72-78ef782d89d3",
+              "name": "server_ip",
+              "type": "string",
+              "value": "={{ $input.first().json.server_ip }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "723c7067-fe88-4b8b-b1ff-38c9eb662641",
+      "name": "Prepare SSH Variables\t",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        832,
+        384
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "command": "=echo '{{ $json.pwd }}' | sudo -S su - jenkins -c \"ssh {{ $json.server_user }}@{{ $json.server_ip }} 'sudo rm -rf /var/log/*.gz && sudo rm -rf /var/log/*.1 && sudo rm -rf /var/log/nginx/*.log && sudo rm -rf /var/log/apache2/*.log && sudo journalctl --vacuum-size=200M && sudo apt-get clean && sudo apt-get autoclean && docker builder prune -af && docker system df && sudo apt-get autoremove -y'\""
+      },
+      "id": "7ef2b2b6-5880-4fc1-93fa-b76c3c75effa",
+      "name": "Run Log Cleanup Commands via SSH\t",
+      "type": "n8n-nodes-base.ssh",
+      "position": [
+        1056,
+        384
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Triggers when an alert email about disk usage is received.\n",
+        "height": 300,
+        "width": 160
+      },
+      "id": "0935c618-237c-4630-9087-80b757a78a9c",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Parses the email body to extract the target server's IP address.\n",
+        "height": 300,
+        "width": 170,
+        "color": 3
+      },
+      "id": "d4efc5ab-9003-4d42-a49c-6ac4c376c9cb",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        576,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Manually set or map credentials, paths, or other config values.\n",
+        "height": 300,
+        "width": 170,
+        "color": 4
+      },
+      "id": "adf3341f-4319-40cc-bf97-8917a2bb5c44",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        800,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Executes cleanup commands (Nginx, PM2, Docker, system logs).\n\n",
+        "height": 300,
+        "width": 170,
+        "color": 6
+      },
+      "id": "4c933879-5907-4616-8902-42cfb2d73edc",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        240
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-27T10:32:11.999Z",
+  "versionId": "12fd1bf3-fc8e-40b0-adb4-09c9be2de1a1"
+}
