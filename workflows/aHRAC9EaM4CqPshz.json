@@ -1,0 +1,121 @@
+{
+  "active": false,
+  "connections": {
+    "Extract Session Information": {
+      "main": [
+        [
+          {
+            "node": "Filter Information",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stripe Trigger on Payment Event": {
+      "main": [
+        [
+          {
+            "node": "Extract Session Information",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T10:50:51.880Z",
+  "id": "aHRAC9EaM4CqPshz",
+  "isArchived": false,
+  "meta": {
+    "templateId": "3391"
+  },
+  "name": "Stripe Payment Order Sync – Auto Retrieve Customer & Product Purchased",
+  "nodes": [
+    {
+      "parameters": {
+        "events": [
+          "checkout.session.completed"
+        ]
+      },
+      "id": "90322fe5-5536-41c3-ac08-ea87a856781b",
+      "name": "Stripe Trigger on Payment Event",
+      "type": "n8n-nodes-base.stripeTrigger",
+      "position": [
+        368,
+        240
+      ],
+      "webhookId": "e85ac894-bb67-436c-ad39-308a00c8e922",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "=https://api.stripe.com/v1/checkout/sessions/{{ $json.data.object.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "stripeApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "expand[]",
+              "value": "line_items"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3feb0b03-921e-4bfd-8a50-b2b6b47e9497",
+      "name": "Extract Session Information",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        672,
+        240
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "95a68e0f-b74c-4ca2-8143-14b469aa6bfb",
+              "name": "Customer Name",
+              "type": "string",
+              "value": "={{ $json.customer_details.name }}"
+            },
+            {
+              "id": "7634efa6-04f3-4dac-8509-56aae29fcc79",
+              "name": "Customer Email",
+              "type": "string",
+              "value": "={{ $json.customer_details.email }}"
+            },
+            {
+              "id": "10e71e07-6dd3-410c-a774-1eeffe2be7a5",
+              "name": "Product Purchased",
+              "type": "string",
+              "value": "={{ $json.line_items.data[0].description }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5a436d1c-88e9-492e-8fe0-33a5706de1b3",
+      "name": "Filter Information",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        928,
+        240
+      ],
+      "typeVersion": 3.4
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T10:50:51.880Z",
+  "versionId": "447c76d0-09d3-421c-af30-3d48ff9c065f"
+}
