@@ -1,0 +1,111 @@
+{
+  "active": false,
+  "connections": {
+    "Trigger - Daily": {
+      "main": [
+        [
+          {
+            "node": "Set Affiliate Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T11:22:59.978Z",
+  "id": "l1J1ruTySquVBfGx",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Affil Amzn",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "4ba6569f-a240-42e8-a196-5173d7398100",
+      "name": "Trigger - Daily",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [\n  {\n    json: {\n      product: \"Wireless Charger\",\n      link: \"https://affiliate.example.com/product123\",\n      description: \"Fast wireless charging pad for iPhone and Android.\"\n    }\n  }\n];"
+      },
+      "id": "1562810c-13a7-495b-bee5-ac56bd55e569",
+      "name": "Set Affiliate Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        160
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "7d875bdb-840a-4a13-9ad6-ef3f2a167ff1",
+      "name": "Generate Post Caption",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        160
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "resource": "row"
+      },
+      "id": "4f0f61c9-b0ee-4fc0-9427-efa9b20d3df6",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "text": "={{$node[\"Generate Post Caption\"].json[\"choices\"][0][\"text\"]}}",
+        "additionalFields": {}
+      },
+      "id": "697fba9c-4f6b-4664-8a4d-63c108c27e61",
+      "name": "Post to Twitter",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "title": "Affiliate Pick: {{$json[\"product\"]}}",
+        "additionalFields": {}
+      },
+      "id": "3882d2bd-de63-4875-af9b-e75fcc9d0bca",
+      "name": "Post to WordPress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        0,
+        304
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T11:23:14.000Z",
+  "versionId": "5f64d74c-fa9d-463f-9689-40d85ac18a1e"
+}
