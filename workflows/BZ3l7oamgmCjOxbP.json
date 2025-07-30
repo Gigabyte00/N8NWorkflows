@@ -1,0 +1,431 @@
+{
+  "active": false,
+  "connections": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Mastodon",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mastodon": {
+      "main": [
+        [
+          {
+            "node": "Google Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Picture": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Picture to Mastodon",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Get Picture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Parameter": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Picture to Mastodon": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Parameter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T10:58:58.335Z",
+  "id": "BZ3l7oamgmCjOxbP",
+  "isArchived": false,
+  "meta": {
+    "templateId": "4935"
+  },
+  "name": "Amazon Affiliate Links to Mastodon with AI Descriptions & Shlink Tracking",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "9f4f98cc-df3d-49e5-a371-818bd2c2ef94",
+      "name": "When clicking ‘Execute workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        416,
+        448
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "6cecfaee-3882-488e-9e9c-28fec3a59b6b",
+      "name": "Mastodon",
+      "type": "n8n-nodes-the-mastodon.mastodon",
+      "position": [
+        1600,
+        432
+      ],
+      "typeVersion": 1,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "content": "## Send Amazon Affiliate to Mastodon\n### Monitor the Links with https://shlink.io/\n",
+        "height": 420,
+        "width": 1640,
+        "color": 5
+      },
+      "id": "91304e37-f846-45ef-8e77-d3606572c8ba",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1y2Gt9VyMOt_Pf8DOz1IqQ5x9cDHFTToJvr6qijT1V4g",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y2Gt9VyMOt_Pf8DOz1IqQ5x9cDHFTToJvr6qijT1V4g/edit?usp=drivesdk",
+          "cachedResultName": "Amazon Affiliate"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y2Gt9VyMOt_Pf8DOz1IqQ5x9cDHFTToJvr6qijT1V4g/edit#gid=0",
+          "cachedResultName": "Sheet1"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Send",
+              "lookupValue": "NO"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "id": "5d58cd9a-be4b-4116-be1a-915c22f37018",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        768,
+        448
+      ],
+      "typeVersion": 4.6
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "918a80b9-90fc-4f80-a4f5-1c97409e5014",
+              "name": "mostodon_instance",
+              "type": "string",
+              "value": "https://mastodon.social/api/v2/media"
+            },
+            {
+              "id": "5a587f92-815c-4726-81bc-2eaba1f08e0e",
+              "name": "mastodon_token",
+              "type": "string",
+              "value": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a87e93ae-aed5-4f95-957e-4640721c29be",
+      "name": "Set Parameter",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        592,
+        448
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4,
+      "notes": "Mastodon Parameters"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a two-line technical ad copy based on this product page: {{ $json[\"Amazon Link\"] }} suppress \"Here is an ad copy\" in the output!",
+        "batching": {}
+      },
+      "id": "30120e03-e058-4e91-b8a5-c073cb60dbcd",
+      "name": "Basic LLM Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1088,
+        304
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "model": "perplexity/sonar",
+        "options": {}
+      },
+      "id": "9323a3cb-7668-448d-8292-652ead0deb8a",
+      "name": "OpenRouter Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "position": [
+        1072,
+        528
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "1c2c5f36-c4df-4c1d-937b-b03839406173",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1408,
+        432
+      ],
+      "typeVersion": 3.2,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.PicURL }}",
+        "options": {}
+      },
+      "id": "aaf70202-fdf6-4aee-8956-603b24c25faa",
+      "name": "Get Picture",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        928,
+        448
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Parameter').item.json.mostodon_instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Set Parameter').item.json.mastodon_token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "736afabe-8479-46d9-8092-7e3db488b4a7",
+      "name": "Picture to Mastodon",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1200,
+        448
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1y2Gt9VyMOt_Pf8DOz1IqQ5x9cDHFTToJvr6qijT1V4g",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y2Gt9VyMOt_Pf8DOz1IqQ5x9cDHFTToJvr6qijT1V4g/edit?usp=drivesdk",
+          "cachedResultName": "Amazon Affiliate"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y2Gt9VyMOt_Pf8DOz1IqQ5x9cDHFTToJvr6qijT1V4g/edit#gid=0",
+          "cachedResultName": "Sheet1"
+        },
+        "columns": {
+          "value": {
+            "Send": "YES",
+            "SHLink": "={{ $('Google Sheets').item.json.SHLink }}"
+          },
+          "schema": [
+            {
+              "id": "SHLink",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "SHLink",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Amazon Link",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "Amazon Link",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "Description",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PicURL",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "PicURL",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Send",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "Send",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "readOnly": true,
+              "required": false,
+              "displayName": "row_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "SHLink"
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "faa25555-7a35-45dc-98f2-7c7743bdee7d",
+      "name": "Google Update",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        1776,
+        432
+      ],
+      "typeVersion": 4.6,
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T10:58:58.335Z",
+  "versionId": "f399d4df-7684-4f85-9fe7-9509c48f1bc0"
+}
