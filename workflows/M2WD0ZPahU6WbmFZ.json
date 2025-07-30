@@ -1,0 +1,234 @@
+{
+  "active": false,
+  "connections": {
+    "Upsert Booking in Postgres\t": {
+      "main": [
+        [
+          {
+            "node": "Respond: Booking Confirmation (VAPI)\t",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger: Booking Request (VAPI)\t": {
+      "main": [
+        [
+          {
+            "node": "Query Table Availability (Postgres)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger: Booking Request (VAPI)\t1": {
+      "main": [
+        [
+          {
+            "node": "Upsert Booking in Postgres\t",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Table Availability (Postgres)": {
+      "main": [
+        [
+          {
+            "node": "Respond: Availability Status (VAPI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-27T10:31:26.427Z",
+  "id": "M2WD0ZPahU6WbmFZ",
+  "isArchived": false,
+  "meta": {
+    "templateId": "5466"
+  },
+  "name": "Automated Restaurant Call Handling & Table Booking System with VAPI and PostgreSQL",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "📝 Description\n\nHandles incoming calls for the restaurant using VAPI to collect user details (name, booking time, number of people), checks table availability in a PostgreSQL database via n8n, books the table if available, sends confirmation to VAPI, and provides hotel service details via VAPI.\n",
+        "height": 200,
+        "width": 420
+      },
+      "id": "aa3b9f79-7923-47df-87d8-72ceaa3f0127",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "                             🟢 Availability Check Flow\n",
+        "height": 280,
+        "width": 780,
+        "color": 3
+      },
+      "id": "0cc6d135-9098-4be1-8de3-fe027653d3d9",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        848,
+        640
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "name",
+          "value": "table_id"
+        },
+        "options": {}
+      },
+      "id": "511c9929-3614-4d09-b1b6-27c14ce304a7",
+      "name": "Query Table Availability (Postgres)",
+      "type": "n8n-nodes-base.postgres",
+      "position": [
+        1168,
+        720
+      ],
+      "typeVersion": 2.6
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n    \"results\": [\n        {\n            \"toolCallId\": \"{{ $('Trigger: Booking Request (VAPI)\t').item.json.body.message.toolCalls[0].id }}\",\n            \"result\":  \"{{ $json.available }}\"\n        }\n    ]\n}",
+        "options": {}
+      },
+      "id": "08671a05-f26e-477a-80ab-b6885e10dfd6",
+      "name": "Respond: Availability Status (VAPI)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        1392,
+        720
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "                                 🔵 Booking Flow\n\n",
+        "height": 280,
+        "width": 780,
+        "color": 4
+      },
+      "id": "3efaa272-9bdb-4db1-bb63-94ffca5a161e",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        848,
+        368
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "027f0f14-93f4-42ff-90a7-715f23316a86",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0fbfd74a-e2a4-4666-9055-c5d588ad6cff",
+      "name": "Trigger: Booking Request (VAPI)\t",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        960,
+        720
+      ],
+      "webhookId": "027f0f14-93f4-42ff-90a7-715f23316a86",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "name",
+          "value": "table_id"
+        },
+        "columns": {
+          "value": {},
+          "schema": [],
+          "mappingMode": "autoMapInputData",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "13d32034-198f-4429-9515-f71275ff2333",
+      "name": "Upsert Booking in Postgres\t",
+      "type": "n8n-nodes-base.postgres",
+      "position": [
+        1168,
+        464
+      ],
+      "typeVersion": 2.6
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n    \"results\": [\n        {\n            \"toolCallId\": \"{{ $('Trigger: Booking Request (VAPI)\t1').item.json.body.message.toolCalls[0].id }}\",\n            \"result\": \"{{ $json.status }}\"\n        }\n    ]\n}",
+        "options": {}
+      },
+      "id": "16c88128-1e44-42df-bbd3-2cd7b1c2e6b0",
+      "name": "Respond: Booking Confirmation (VAPI)\t",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        1392,
+        464
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "2f7eff83-2e85-45ee-b544-7f889ca3ad07",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "ee35e567-9de8-4518-a66f-0d168a973544",
+      "name": "Trigger: Booking Request (VAPI)\t1",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        960,
+        464
+      ],
+      "webhookId": "2f7eff83-2e85-45ee-b544-7f889ca3ad07",
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-27T10:31:26.427Z",
+  "versionId": "2dc3a61f-4797-4022-a272-d780bbfaca80"
+}
