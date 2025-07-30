@@ -1,0 +1,158 @@
+{
+  "active": false,
+  "connections": {
+    "ScrapeNinja": {
+      "main": [
+        [
+          {
+            "node": "Cleanup HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleanup HTML": {
+      "main": [
+        [
+          {
+            "node": "Generate JS eval code via LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate JS eval code via LLM",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate custom web scraper": {
+      "main": [
+        [
+          {
+            "node": "ScrapeNinja",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate JS eval code via LLM": {
+      "main": [
+        [
+          {
+            "node": "Eval generated code to extract data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eval generated code to extract data": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T01:22:59.072Z",
+  "id": "0Bh1U8T1SzEjc1dF",
+  "isArchived": false,
+  "meta": {
+    "templateId": "2812"
+  },
+  "name": "Scrape any web page into structured JSON data with ScrapeNinja and AI",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "9dd743dd-4ee6-4aaf-820d-7e63ea31399c",
+      "name": "ScrapeNinja",
+      "type": "CUSTOM.scrapeNinja",
+      "position": [
+        576,
+        240
+      ],
+      "typeVersion": 1,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-exp-1206",
+        "options": {}
+      },
+      "id": "fbfe223d-e37f-473d-96c5-a5e89b19e2fc",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        1056,
+        528
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "75a9b517-f51e-4b84-90d5-d9352f5185cc",
+      "name": "Generate custom web scraper",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "c1e4e096-ae88-45d4-aed0-d7b92b496b5a",
+      "name": "Cleanup HTML",
+      "type": "CUSTOM.scrapeNinja",
+      "position": [
+        800,
+        240
+      ],
+      "typeVersion": 1,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=write cheerio.js function to news items. your response MUST start with:\n\nfunction extract(html, cheerioInstance) {\n// use cheerio to load html...\n\nreturn [{ url: \"item1\", \"title\": \"xxx\", \"score\": \"5\", comments: 6 }, ... ]\n}\ndo not use new URL() because this wont work in my env.\nhtml:\n{{ $json.html }}"
+      },
+      "id": "dccb1015-ce34-4c4c-b556-a31de8639baf",
+      "name": "Generate JS eval code via LLM",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1008,
+        240
+      ],
+      "typeVersion": 1.5
+    },
+    {
+      "parameters": {},
+      "id": "71c03255-9bb8-4ce8-b191-7b163326aa41",
+      "name": "Eval generated code to extract data",
+      "type": "CUSTOM.scrapeNinja",
+      "position": [
+        1376,
+        240
+      ],
+      "typeVersion": 1,
+      "credentials": {}
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T01:22:59.072Z",
+  "versionId": "40ce5cad-498f-4c00-8e54-e59bf32b608e"
+}
