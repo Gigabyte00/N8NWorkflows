@@ -1,0 +1,70 @@
+{
+  "active": false,
+  "connections": {
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T03:04:52.185Z",
+  "id": "mauNX7VFNZA1LrZE",
+  "isArchived": false,
+  "meta": {
+    "templateId": "514"
+  },
+  "name": "Get first and last names from Facebook Graph API",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "58c1fbc7-72f1-43e0-8818-a68e7735a20a"
+    },
+    {
+      "parameters": {
+        "node": "me",
+        "options": {
+          "fields": {
+            "field": [
+              {
+                "name": "last_name"
+              },
+              {
+                "name": "first_name"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "position": [
+        576,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "78d8325b-3a08-4a8b-a473-44f390c2008b"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T03:04:52.185Z",
+  "versionId": "5d3a6428-eb44-4ea7-b9b5-c43b3a14be2c"
+}
