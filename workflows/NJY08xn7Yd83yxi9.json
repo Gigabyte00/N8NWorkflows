@@ -1,0 +1,1224 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Accounts1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Accounts1": {
+      "main": [
+        [
+          {
+            "node": "Get instrument SPY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get instrument SPY": {
+      "main": [
+        [
+          {
+            "node": "Get instrument SPY JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get instrument SPY JSON": {
+      "main": [
+        [
+          {
+            "node": "Get option expirations SPY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get option expirations SPY": {
+      "main": [
+        [
+          {
+            "node": "Get option expirations SPY JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get option expirations SPY JSON": {
+      "main": [
+        [
+          {
+            "node": "Get option chain SPY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get option chain SPY": {
+      "main": [
+        [
+          {
+            "node": "Get option chain SPY JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get option chain SPY JSON": {
+      "main": [
+        [
+          {
+            "node": "Get option greeks SPY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get option greeks SPY": {
+      "main": [
+        [
+          {
+            "node": "Get option greeks SPY JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get option greeks SPY JSON": {
+      "main": [
+        [
+          {
+            "node": "Get quotes1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get quotes1": {
+      "main": [
+        [
+          {
+            "node": "Get quotes SPY JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get quotes SPY JSON": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preflight multi leg SPY": {
+      "main": [
+        [
+          {
+            "node": "Preflight multi leg SPY JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preflight multi leg SPY JSON": {
+      "main": [
+        [
+          {
+            "node": "Place multileg order SPY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Place multileg order SPY": {
+      "main": [
+        [
+          {
+            "node": "Place multileg order SPY JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Place multileg order SPY JSON": {
+      "main": [
+        [
+          {
+            "node": "Get order SPY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get order SPY": {
+      "main": [
+        [
+          {
+            "node": "Get order SPY JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get order SPY JSON": {
+      "main": [
+        [
+          {
+            "node": "Cancel order SPY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cancel order SPY": {
+      "main": [
+        [
+          {
+            "node": "Cancel order SPY JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Preflight multi leg SPY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-30T08:47:38.897Z",
+  "id": "NJY08xn7Yd83yxi9",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "SPY - Public copy",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3632,
+        -1600
+      ],
+      "id": "f81163ba-0cc4-4f43-b775-026628a6e06f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/create_personal_access_token.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6448,
+        304
+      ],
+      "id": "5d04d7dc-95a8-42c1-95ed-52a9f4824ef6",
+      "name": "Personal Access Token"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_accounts.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6448,
+        528
+      ],
+      "id": "dc2795c4-7b8e-4024-b605-c63932d5d635",
+      "name": "Get Accounts"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_account_portfolio_v2.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6448,
+        752
+      ],
+      "id": "55814dc9-27f8-4d3e-afe2-25063e318a22",
+      "name": "Get account portfolio v2"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_history.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6448,
+        976
+      ],
+      "id": "e43ceb65-f0c8-4388-8f16-78593dc7dda6",
+      "name": "Get history"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_all_instruments.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6448,
+        1200
+      ],
+      "id": "10cbddc8-41cd-47c7-92c4-c98295fc0d0b",
+      "name": "Get all instruments"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_instrument.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6448,
+        1424
+      ],
+      "id": "053c6a5b-a33c-45af-93fb-fa15edf4232d",
+      "name": "Get instrument"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_quotes.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        304
+      ],
+      "id": "cac636cc-5dd9-4fd2-9cb5-03750c6c13c9",
+      "name": "Get quotes"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_option_expirations.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        528
+      ],
+      "id": "61f3fb3d-026a-4f4f-9f62-95fbc571a723",
+      "name": "Get option expirations"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_option_chain.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        752
+      ],
+      "id": "1e6e24c6-5fdb-4fcd-aabf-79f13480adfc",
+      "name": "Get option chain"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/preflight_single_leg.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        976
+      ],
+      "id": "3fe26512-ada8-46e8-b637-c8fd6bc483f6",
+      "name": "Preflight single leg"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/preflight_multi_leg.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        1200
+      ],
+      "id": "b19a7b4f-bf5d-491f-a0f5-68b11a76a447",
+      "name": "Preflight multi leg"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/place_order.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        1424
+      ],
+      "id": "31a93799-02e4-4dc5-86ec-05c408e462ec",
+      "name": "Place order"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/place_multileg_order.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        1648
+      ],
+      "id": "b2144e04-c9bd-47d5-9c60-6840528db1ce",
+      "name": "Place multileg order"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_order.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        1872
+      ],
+      "id": "232db74c-3101-46c6-b8ab-6b7dc206fbb5",
+      "name": "Get order"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/cancel_order.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        2096
+      ],
+      "id": "9f55addd-e640-45f7-bf07-e07b7a539301",
+      "name": "Cancel order"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_option_greeks.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        2320
+      ],
+      "id": "bfa08a92-c1db-478d-ab57-d8debc0cd9b5",
+      "name": "Get option greeks"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/create_personal_access_token.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -3632,
+        -1760
+      ],
+      "id": "c78bbb20-4c04-4da7-b920-9630241f7fe1",
+      "name": "Personal Access Token1"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_accounts.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -3440,
+        -1600
+      ],
+      "id": "7d7b5453-ade9-4139-b698-569f38b67a1d",
+      "name": "Get Accounts1"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_quotes.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -3200,
+        -944
+      ],
+      "id": "60720473-2aab-4775-987c-a7bc6660020e",
+      "name": "Get quotes1"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_instrument.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -3168,
+        -1328
+      ],
+      "id": "67f88b16-446e-4edd-8fbd-29b785dd3a9f",
+      "name": "Get instrument SPY"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($json[\"stdout\"]);\nreturn [{ json: data }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2944,
+        -1328
+      ],
+      "id": "bf1d654b-95e8-4ece-bb68-a49f005c0528",
+      "name": "Get instrument SPY JSON"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_option_expirations.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -2720,
+        -1328
+      ],
+      "id": "93221642-981c-4c51-a3b7-44b2d9ba99c3",
+      "name": "Get option expirations SPY"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($json[\"stdout\"]);\nreturn [{ json: data }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2496,
+        -1328
+      ],
+      "id": "2d209407-1eae-4939-9e6d-32cd4323f1a0",
+      "name": "Get option expirations SPY JSON"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_option_chain.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -2272,
+        -1328
+      ],
+      "id": "38dc08d1-3594-4318-bbb6-e4393da8897b",
+      "name": "Get option chain SPY"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($json[\"stdout\"]);\nreturn [{ json: data }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2048,
+        -1328
+      ],
+      "id": "8ad85e18-cb85-4799-9914-9976e8418bf5",
+      "name": "Get option chain SPY JSON"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_option_greeks.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -1824,
+        -1328
+      ],
+      "id": "c37ecd1b-ecf3-4c6e-a665-b023c482c5df",
+      "name": "Get option greeks SPY"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($json[\"stdout\"]);\nreturn [{ json: data }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1600,
+        -1328
+      ],
+      "id": "a89caffe-832d-42d6-8497-a0af5ad06eb8",
+      "name": "Get option greeks SPY JSON"
+    },
+    {
+      "parameters": {
+        "schema": "public",
+        "table": "position_snapshots",
+        "columns": "trade_id,timestamp,spy_price,spread_bid,spread_ask,spread_mid,current_pnl,pnl_percentage,short_delta,long_delta,time_to_expiry,theta_decay",
+        "options": {
+          "skipOnConflict": true
+        }
+      },
+      "id": "1952ae3a-a2cc-4cb7-ac7f-58abcaca9e7f",
+      "name": "Save Snapshot",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -1696,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "should-close",
+              "leftValue": "={{ $json.should_close }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "337d1ae0-3706-473f-a2fa-e7b5ffac4e6c",
+      "name": "Should Close?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1744,
+        944
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "trades",
+        "columns": "status,close_time,close_reason,final_pnl",
+        "options": {}
+      },
+      "id": "e21c4819-8373-48d3-9290-9591234846ff",
+      "name": "Update Trade",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -864,
+        1152
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7ad40e3e-9d90-4c7b-b2cb-6e808e7021dd",
+      "name": "Prep Monitoring Update",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -1152,
+        1520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "position_monitoring",
+        "columns": "monitoring_active,last_check",
+        "options": {}
+      },
+      "id": "1d424f8d-ad80-4783-811b-b5fbcf45d3ed",
+      "name": "Deactivate Monitoring",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -672,
+        1248
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_CHAT_ID }}",
+        "text": "={{ $node[\"process-close\"].json.notification }}",
+        "additionalFields": {}
+      },
+      "id": "79c03189-bfd7-459f-8c33-38f66c2308d6",
+      "name": "Notify Close",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        -656,
+        1088
+      ],
+      "webhookId": "495ca2e8-b286-40e3-a959-247d4ad9e5da"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "pnl-alert",
+              "leftValue": "={{ Math.abs($json.snapshot.pnl_percentage) }}",
+              "rightValue": 40,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "time-alert",
+              "leftValue": "={{ $json.hours_to_expiry }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "46e4f38f-88de-4ca5-be3b-ec7a82c0ea83",
+      "name": "Check Alerts",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1728,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Prepare alert message\nconst data = $input.item.json;\nconst snapshot = data.snapshot;\nconst position = data.position;\n\nlet alertType = '';\nlet alertEmoji = '⚠️';\n\nif (Math.abs(snapshot.pnl_percentage) >= 40) {\n  alertType = snapshot.pnl_percentage > 0 ? 'PROFIT ALERT' : 'LOSS ALERT';\n  alertEmoji = snapshot.pnl_percentage > 0 ? '🎯' : '🚨';\n} else if (data.hours_to_expiry <= 1) {\n  alertType = 'TIME ALERT';\n  alertEmoji = '⏰';\n}\n\nconst message = `${alertEmoji} 0DTE ${alertType}\\n\\n` +\n                `📊 P&L: ${snapshot.pnl_percentage.toFixed(1)}% (${snapshot.current_pnl.toFixed(2)})\\n` +\n                `📈 SPY: ${snapshot.spy_price.toFixed(2)}\\n` +\n                `⏰ Time Left: ${data.hours_to_expiry.toFixed(1)} hours\\n` +\n                `📉 Short Delta: ${snapshot.short_delta.toFixed(2)}\\n\\n` +\n                `Position: ${position.short_leg}\\n` +\n                `Contracts: ${position.quantity}`;\n\nreturn {\n  alert_type: alertType,\n  message: message,\n  trade_id: position.trade_id || position.id,\n  pnl_at_alert: snapshot.current_pnl,\n  spy_price_at_alert: snapshot.spy_price\n};"
+      },
+      "id": "229467f2-9d30-43eb-8ece-a6642631c0be",
+      "name": "Prepare Alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2064,
+        1312
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) as alert_count \nFROM position_alerts \nWHERE trade_id = {{ $json.trade_id }}\nAND alert_type = '{{ $json.alert_type }}'\nAND timestamp > NOW() - INTERVAL '30 minutes'",
+        "options": {}
+      },
+      "id": "590518fd-0c89-4e47-b8fc-2421317b2efe",
+      "name": "Check Duplicate Alert",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -1600,
+        1600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "no-recent-alert",
+              "leftValue": "={{ $json[0].alert_count }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c5d5fb2c-7f8f-4c4c-8f8e-3ea7af8e0c8d",
+      "name": "New Alert?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -2144,
+        1504
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "d02002e5-60d7-4c79-b4f8-7cb26e4f4e8b",
+      "name": "Prepare Alert Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -944,
+        1568
+      ]
+    },
+    {
+      "parameters": {
+        "schema": "public",
+        "table": "position_alerts",
+        "columns": "trade_id,timestamp,alert_type,message,pnl_at_alert,spy_price_at_alert",
+        "options": {}
+      },
+      "id": "d58d3dd2-5d5a-4655-88ce-248490cd4aa4",
+      "name": "Log Alert",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -1168,
+        992
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are the world leading quantitive researcher. You will analyze the options data and all associated data externally to determine:\n1) If a trade should be placed\n2) Analyze the option chain for best strikes with liquidity\n3) Suggest the optimal strikes for selling to open credit spreads. If bullish, sell to open a put credit spread. If bearish, sell to open a call credit spread. "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -2768,
+        -944
+      ],
+      "id": "73ad824f-77cf-4cf2-a781-0529fa035a2f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($json[\"stdout\"]);\nreturn [{ json: data }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2976,
+        -944
+      ],
+      "id": "45dc0d25-4847-4450-9f9a-347754ec8d1d",
+      "name": "Get quotes SPY JSON"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/preflight_multi_leg.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -1776,
+        -944
+      ],
+      "id": "77ba1fb0-4855-40fa-99e5-6d45ce5265af",
+      "name": "Preflight multi leg SPY"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($json[\"stdout\"]);\nreturn [{ json: data }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1552,
+        -944
+      ],
+      "id": "187c105f-6677-4317-bf96-109d61c38d14",
+      "name": "Preflight multi leg SPY JSON"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/place_multileg_order.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -1328,
+        -944
+      ],
+      "id": "162179bf-d603-45d7-9a5b-66d1571a02e7",
+      "name": "Place multileg order SPY"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($json[\"stdout\"]);\nreturn [{ json: data }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1104,
+        -944
+      ],
+      "id": "c844fbf1-fbf8-4d52-8f42-bc940b386001",
+      "name": "Place multileg order SPY JSON"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/get_order.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -2208,
+        -688
+      ],
+      "id": "8c2be2d1-b5b4-4979-8e4b-e9c57efed993",
+      "name": "Get order SPY"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($json[\"stdout\"]);\nreturn [{ json: data }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1984,
+        -688
+      ],
+      "id": "9153af8e-32d0-4c18-b47a-14f2f8ccd9f6",
+      "name": "Get order SPY JSON"
+    },
+    {
+      "parameters": {
+        "command": "python3 /files/alpaca-py/customalpaca_py/PublicPy/cancel_order.py"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -1760,
+        -688
+      ],
+      "id": "b13ceec9-26c2-40ab-b09f-88970efa2b10",
+      "name": "Cancel order SPY"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($json[\"stdout\"]);\nreturn [{ json: data }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1536,
+        -688
+      ],
+      "id": "c0cc0a47-cfb8-412d-bfd9-d79bc80df7df",
+      "name": "Cancel order SPY JSON"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -2912,
+        -736
+      ],
+      "id": "39158af3-1978-48f7-9719-a1ba2ea84cd9",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "GgdJs4Gzjaysk4N9",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -2768,
+        -736
+      ],
+      "id": "4dc3292d-52f4-4bd7-96e9-84740361d84b",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {}
+      }
+    ],
+    "Personal Access Token": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get Accounts": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get account portfolio v2": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get history": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get all instruments": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get instrument": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get quotes": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get option expirations": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get option chain": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Preflight single leg": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Place order": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Place multileg order": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Personal Access Token1": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get Accounts1": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get quotes1": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get instrument SPY": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get instrument SPY JSON": [
+      {
+        "json": {
+          "symbol": "SPY",
+          "ask_price": 636.82,
+          "bid_price": 636.78,
+          "ask_size": 15,
+          "bid_size": 15
+        }
+      }
+    ],
+    "Get option expirations SPY": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Get option chain SPY": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ],
+    "Place multileg order SPY": [
+      {
+        "json": {
+          "exitCode": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      }
+    ]
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-30T09:16:32.000Z",
+  "versionId": "8a8de122-9545-4f00-bd7c-335a97c6de88"
+}
