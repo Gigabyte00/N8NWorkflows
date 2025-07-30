@@ -1,0 +1,718 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-07-24T16:04:38.642Z",
+  "id": "enfFftkqofeRYxu0",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "SPY",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "9bda609b-9e44-4d3a-a306-a572334c73a9",
+      "name": "1. Schedule Trigger 9AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Step 2: Authentication & Setup\n// Initialize Alpaca SDK and verify account\n\nimport os\nfrom alpaca.trading.client import TradingClient\nfrom alpaca.data.historical.option import OptionHistoricalDataClient\nfrom alpaca.data.historical.stock import StockHistoricalDataClient\nfrom alpaca.data.live.option import OptionDataStream\n\n// Get credentials from environment\nconst apiKey = $env.ALPACA_API_KEY;\nconst secretKey = $env.ALPACA_SECRET_KEY;\nconst isPaper = $env.ALPACA_PAPER === 'true';\n\n// Initialize clients\nconst tradingClient = new TradingClient(apiKey, secretKey, paper=isPaper);\nconst stockDataClient = new StockHistoricalDataClient(apiKey, secretKey);\nconst optionDataClient = new OptionHistoricalDataClient(apiKey, secretKey);\n\n// Verify account\nconst account = await tradingClient.get_account();\n\nif (account.options_trading_level < 3) {\n  throw new Error('Options Level 3 required for vertical spreads');\n}\n\n// Check if market is open\nif (!account.market_open) {\n  throw new Error('Market is closed');\n}\n\n// Store in workflow static data\n$node[\"context\"].json = {\n  apiKey: apiKey,\n  secretKey: secretKey,\n  accountId: account.id,\n  buyingPower: parseFloat(account.buying_power),\n  optionsLevel: account.options_trading_level,\n  initialized: true,\n  timestamp: new Date().toISOString()\n};\n\nreturn $node[\"context\"].json;"
+      },
+      "id": "b21db08a-c242-44a8-bd04-db37e0c31706",
+      "name": "2. Auth & Setup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 30,
+        "unit": "minutes"
+      },
+      "id": "1343a86b-bc20-4527-8d19-98c15f4f2d83",
+      "name": "3. Wait Until 9:30",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -320
+      ],
+      "webhookId": "646d4dce-49af-4318-abbd-2348a413d9f7"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Step 4: Get SPY Opening Price\n// Using Alpaca SDK to fetch market data\n\nfrom alpaca.data.requests import StockBarsRequest\nfrom alpaca.data.timeframe import TimeFrame\nfrom datetime import datetime, time\nimport pytz\n\n// Initialize client from context\nconst stockDataClient = $node[\"auth-setup\"].json.stockDataClient;\n\n// Get SPY opening price\nconst eastern = pytz.timezone('America/New_York');\nconst marketOpen = new Date();\nmarketOpen.setHours(9, 30, 0, 0);\n\nconst request = {\n  symbol_or_symbols: \"SPY\",\n  timeframe: \"1Min\",\n  start: marketOpen.toISOString(),\n  limit: 1\n};\n\nconst bars = await stockDataClient.get_stock_bars(request);\nconst spyOpen = bars.SPY[0].open;\nconst spyHigh = bars.SPY[0].high;\nconst spyLow = bars.SPY[0].low;\nconst spyClose = bars.SPY[0].close;\nconst spyVolume = bars.SPY[0].volume;\n\n// Prepare for database save\nconst marketData = {\n  timestamp: new Date().toISOString(),\n  symbol: 'SPY',\n  open_price: spyOpen,\n  high: spyHigh,\n  low: spyLow,\n  close: spyClose,\n  volume: spyVolume,\n  data_source: 'alpaca'\n};\n\nreturn {\n  spy_open: spyOpen,\n  market_data: marketData,\n  strike_range: {\n    min: Math.floor(spyOpen * 0.95),\n    max: Math.ceil(spyOpen * 1.00)\n  }\n};"
+      },
+      "id": "e754505d-bf1e-4966-8496-7612c6e23785",
+      "name": "4. Get SPY Open",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "schema": "public",
+        "table": "market_data",
+        "columns": "timestamp,symbol,open_price,high,low,close,volume,data_source",
+        "options": {}
+      },
+      "id": "f3640ec9-a494-4949-b91b-56f472fa8d38",
+      "name": "Save Market Data",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        640,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "vix-check",
+              "leftValue": "={{ $node[\"get-vix\"].json.value }}",
+              "rightValue": 30,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            },
+            {
+              "id": "volatility-check",
+              "leftValue": "={{ Math.abs(($node[\"get-current-spy\"].json.price - $node[\"get-spy-open\"].json.spy_open) / $node[\"get-spy-open\"].json.spy_open) }}",
+              "rightValue": 0.01,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1a8cff9e-a843-4acd-a8a2-5af08f293e7c",
+      "name": "5. Market Conditions",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        448,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 30,
+        "unit": "minutes"
+      },
+      "id": "bea8c6c4-a8ab-4528-8351-51d8a238061e",
+      "name": "6. Wait Until 10AM",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -16
+      ],
+      "webhookId": "8d3c3794-9558-4f7a-bcfa-305b1e9fd625"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Step 7: Fetch 0DTE Options Chain\n// Get put options expiring today\n\nfrom alpaca.trading.requests import GetOptionContractsRequest\nfrom alpaca.data.requests import OptionLatestQuoteRequest\nfrom datetime import datetime\n\nconst tradingClient = $node[\"auth-setup\"].json.tradingClient;\nconst optionDataClient = $node[\"auth-setup\"].json.optionDataClient;\nconst spyOpen = $node[\"get-spy-open\"].json.spy_open;\n\n// Calculate strike range\nconst minStrike = Math.floor(spyOpen * 0.95).toString();\nconst maxStrike = Math.ceil(spyOpen * 1.00).toString();\n\n// Request 0DTE options\nconst contractsRequest = {\n  underlying_symbols: [\"SPY\"],\n  status: \"active\",\n  expiration_date: new Date().toISOString().split('T')[0],\n  type: \"put\",\n  strike_price_gte: minStrike,\n  strike_price_lte: maxStrike\n};\n\n// Get contracts\nconst contracts = await tradingClient.get_option_contracts(contractsRequest);\nconst optionsData = [];\n\n// Fetch quotes for each contract\nfor (const contract of contracts.option_contracts) {\n  const quoteRequest = {\n    symbol_or_symbols: contract.symbol\n  };\n  \n  const quote = await optionDataClient.get_option_latest_quote(quoteRequest);\n  const quoteData = quote[contract.symbol];\n  \n  const optionData = {\n    symbol: contract.symbol,\n    underlying: contract.underlying_symbol,\n    strike: parseFloat(contract.strike_price),\n    expiration: contract.expiration_date,\n    type: contract.type,\n    bid: quoteData.bid_price,\n    ask: quoteData.ask_price,\n    mid_price: (quoteData.bid_price + quoteData.ask_price) / 2,\n    bid_size: quoteData.bid_size,\n    ask_size: quoteData.ask_size,\n    spread: quoteData.ask_price - quoteData.bid_price\n  };\n  \n  // Only include liquid options\n  if (optionData.spread <= 0.10 && quoteData.bid_size >= 10) {\n    optionsData.push(optionData);\n  }\n}\n\nreturn {\n  options_chain: optionsData,\n  count: optionsData.length,\n  timestamp: new Date().toISOString()\n};"
+      },
+      "id": "27cce196-4a33-42f3-8e7e-e7668d099484",
+      "name": "7. Fetch 0DTE Options",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "schema": "public",
+        "table": "options_chain",
+        "columns": "timestamp,symbol,underlying,strike,expiration,type,bid,ask,mid_price,bid_size,ask_size",
+        "options": {}
+      },
+      "id": "108bcdc8-0c01-4649-b66e-9b3eeddb07e3",
+      "name": "Save Options Chain",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        1040,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Step 8: Find Optimal Strikes\n// Calculate deltas and find best spread\n\nconst optionsChain = $node[\"fetch-options\"].json.options_chain;\nconst spyPrice = $node[\"get-spy-open\"].json.spy_open;\n\n// Black-Scholes delta calculation\nfunction calculateDelta(optionPrice, strike, underlying, timeToExpiry, riskFree = 0.05, optionType = 'put') {\n  const volatility = 0.15; // Implied volatility estimate\n  const d1 = (Math.log(underlying / strike) + (riskFree + 0.5 * volatility * volatility) * timeToExpiry) / (volatility * Math.sqrt(timeToExpiry));\n  const delta = -normcdf(-d1); // For puts\n  return delta;\n}\n\nfunction normcdf(x) {\n  const t = 1 / (1 + 0.2316419 * Math.abs(x));\n  const d = 0.3989423 * Math.exp(-x * x / 2);\n  const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));\n  return x > 0 ? 1 - p : p;\n}\n\n// Target deltas\nconst SHORT_PUT_DELTA_TARGET = -0.40;\nconst LONG_PUT_DELTA_TARGET = -0.20;\nconst DELTA_TOLERANCE = 0.02;\n\n// Calculate time to expiry (fraction of year)\nconst now = new Date();\nconst marketClose = new Date();\nmarketClose.setHours(16, 0, 0, 0);\nconst timeToExpiry = (marketClose - now) / (1000 * 60 * 60 * 24 * 365);\n\n// Find candidates\nconst shortCandidates = [];\nconst longCandidates = [];\n\nfor (const option of optionsChain) {\n  const delta = calculateDelta(option.mid_price, option.strike, spyPrice, timeToExpiry);\n  \n  if (Math.abs(delta - SHORT_PUT_DELTA_TARGET) <= DELTA_TOLERANCE) {\n    shortCandidates.push({ ...option, delta });\n  }\n  if (Math.abs(delta - LONG_PUT_DELTA_TARGET) <= DELTA_TOLERANCE) {\n    longCandidates.push({ ...option, delta });\n  }\n}\n\n// Find optimal spread\nlet bestSpread = null;\nlet maxScore = 0;\n\nfor (const short of shortCandidates) {\n  for (const long of longCandidates) {\n    const spreadWidth = short.strike - long.strike;\n    \n    if (spreadWidth >= 2 && spreadWidth <= 5) {\n      const netCredit = short.bid - long.ask;\n      const creditPercentage = (netCredit / spreadWidth) * 100;\n      \n      if (creditPercentage >= 33) {\n        const score = creditPercentage * (1 - (short.spread + long.spread) / 0.20);\n        \n        if (score > maxScore) {\n          maxScore = score;\n          bestSpread = {\n            short_leg: short,\n            long_leg: long,\n            spread_width: spreadWidth,\n            net_credit: netCredit,\n            credit_percentage: creditPercentage,\n            score: score\n          };\n        }\n      }\n    }\n  }\n}\n\nif (!bestSpread) {\n  throw new Error('No suitable spread found');\n}\n\nreturn {\n  optimal_spread: bestSpread,\n  analysis_time: new Date().toISOString(),\n  candidates: {\n    short_count: shortCandidates.length,\n    long_count: longCandidates.length\n  }\n};"
+      },
+      "id": "d0359c71-0cc3-4d6b-accd-0a76c482c9f2",
+      "name": "8. Find Optimal Strikes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "schema": "public",
+        "table": "spread_analysis",
+        "columns": "timestamp,underlying_price,short_strike,short_delta,short_bid,short_ask,long_strike,long_delta,long_bid,long_ask,spread_width,net_credit,credit_percentage,analysis_score",
+        "options": {}
+      },
+      "id": "3bdc8b1f-34cd-4e3b-b537-bd5a1b61e5aa",
+      "name": "Save Analysis",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "spread-found",
+              "leftValue": "={{ $node[\"find-strikes\"].json.optimal_spread }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f2f816bc-19c9-495e-b6e3-fa712b922542",
+      "name": "9. Valid Strikes?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Step 10: Risk Assessment\n// Calculate position size based on account and risk parameters\n\nconst account = $node[\"auth-setup\"].json;\nconst spread = $node[\"find-strikes\"].json.optimal_spread;\n\n// Risk parameters\nconst MAX_RISK_PER_TRADE = 0.02; // 2% of account\nconst MAX_DAILY_EXPOSURE = 0.10; // 10% of account\nconst MIN_CONTRACTS = 1;\nconst MAX_CONTRACTS = 10;\n\n// Get current positions from database\nconst today = new Date().toISOString().split('T')[0];\n// This would query the database for today's trades\nconst dailyExposure = 0; // Placeholder - would calculate from DB\n\n// Calculate position size\nconst accountBalance = account.buyingPower;\nconst maxLossPerSpread = (spread.spread_width - spread.net_credit) * 100;\nconst maxRiskDollars = accountBalance * MAX_RISK_PER_TRADE;\n\n// Contracts based on risk\nlet contracts = Math.floor(maxRiskDollars / maxLossPerSpread);\n\n// Check daily exposure limit\nconst remainingDailyExposure = (accountBalance * MAX_DAILY_EXPOSURE) - dailyExposure;\nconst dailyContracts = Math.floor(remainingDailyExposure / maxLossPerSpread);\n\ncontracts = Math.min(contracts, dailyContracts, MAX_CONTRACTS);\ncontracts = Math.max(contracts, MIN_CONTRACTS);\n\n// Final risk calculation\nconst totalRisk = contracts * maxLossPerSpread;\nconst riskPercentage = (totalRisk / accountBalance) * 100;\n\nreturn {\n  position_size: contracts,\n  max_loss: totalRisk,\n  risk_percentage: riskPercentage,\n  max_profit: spread.net_credit * 100 * contracts,\n  breakeven: spread.short_leg.strike - spread.net_credit,\n  account_balance: accountBalance,\n  assessment_time: new Date().toISOString()\n};"
+      },
+      "id": "ce64483c-f606-408e-a9a8-9189026cdc52",
+      "name": "10. Risk Assessment",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "time-check",
+              "leftValue": "={{ new Date().getHours() }}",
+              "rightValue": 14,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            },
+            {
+              "id": "minute-check",
+              "leftValue": "={{ new Date().getHours() === 14 ? new Date().getMinutes() : 0 }}",
+              "rightValue": 30,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "635915a8-eb13-4df6-a5df-b3483a28d078",
+      "name": "11. Time Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1648,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Step 12: Submit Multi-Leg Order\n// Execute the vertical spread using Alpaca SDK\n\nfrom alpaca.trading.requests import MarketOrderRequest\nfrom alpaca.trading.enums import OrderSide, OrderClass, TimeInForce\n\nconst tradingClient = $node[\"auth-setup\"].json.tradingClient;\nconst spread = $node[\"find-strikes\"].json.optimal_spread;\nconst riskAssessment = $node[\"risk-assessment\"].json;\n\n// Create multi-leg order\nconst multiLegOrder = {\n  symbol: \"SPY\",\n  qty: riskAssessment.position_size,\n  order_class: \"mleg\",\n  time_in_force: \"day\",\n  legs: [\n    {\n      symbol: spread.short_leg.symbol,\n      side: \"sell\",\n      ratio_qty: 1\n    },\n    {\n      symbol: spread.long_leg.symbol,\n      side: \"buy\",\n      ratio_qty: 1\n    }\n  ]\n};\n\ntry {\n  // Submit order\n  const order = await tradingClient.submit_order(multiLegOrder);\n  \n  // Prepare trade record\n  const tradeRecord = {\n    order_id: order.id,\n    timestamp: new Date().toISOString(),\n    strategy_type: 'BULL_PUT_SPREAD',\n    underlying: 'SPY',\n    short_leg: spread.short_leg.symbol,\n    long_leg: spread.long_leg.symbol,\n    quantity: riskAssessment.position_size,\n    spread_width: spread.spread_width,\n    credit_received: spread.net_credit,\n    max_loss: riskAssessment.max_loss,\n    breakeven_price: riskAssessment.breakeven,\n    account_balance_at_entry: riskAssessment.account_balance,\n    risk_percentage: riskAssessment.risk_percentage,\n    status: 'PENDING'\n  };\n  \n  return {\n    success: true,\n    order: order,\n    trade_record: tradeRecord\n  };\n  \n} catch (error) {\n  return {\n    success: false,\n    error: error.message\n  };\n}"
+      },
+      "id": "f3fe430b-160b-4011-9192-6a539eece46b",
+      "name": "12. Submit Order",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "schema": "public",
+        "table": "trades",
+        "columns": "order_id,timestamp,strategy_type,underlying,short_leg,long_leg,quantity,spread_width,credit_received,max_loss,breakeven_price,account_balance_at_entry,risk_percentage,status",
+        "options": {}
+      },
+      "id": "c55ab2e4-4df6-4b9e-b19e-aded5cd64175",
+      "name": "Save Trade",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        2048,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "order-success",
+              "leftValue": "={{ $node[\"submit-order\"].json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c3774bb0-f630-4b25-b44d-77ba6d908a20",
+      "name": "13. Order Filled?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2048,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Step 14: Initialize Monitoring\n// Set up position monitoring parameters\n\nconst trade = $node[\"save-trade\"].json;\nconst spread = $node[\"find-strikes\"].json.optimal_spread;\nconst spyPrice = $node[\"get-spy-open\"].json.spy_open;\n\n// Update trade status to FILLED\nconst updateTrade = {\n  status: 'FILLED',\n  fill_time: new Date().toISOString()\n};\n\n// Create monitoring record\nconst monitoringRecord = {\n  trade_id: trade.id,\n  start_time: new Date().toISOString(),\n  profit_target: spread.net_credit * 0.5, // 50% of credit\n  stop_loss: spread.net_credit * 2, // 200% of credit (2x loss)\n  delta_threshold: -0.60,\n  initial_spy_price: spyPrice,\n  monitoring_active: true\n};\n\n// Send notifications\nconst notification = {\n  type: 'POSITION_OPENED',\n  message: `0DTE Bull Put Spread Opened:\\n` +\n           `Short: ${spread.short_leg.symbol} @ ${spread.short_leg.strike}\\n` +\n           `Long: ${spread.long_leg.symbol} @ ${spread.long_leg.strike}\\n` +\n           `Credit: $${(spread.net_credit * 100).toFixed(2)}\\n` +\n           `Max Loss: $${(spread.spread_width - spread.net_credit) * 100).toFixed(2)}\\n` +\n           `Contracts: ${$node[\"risk-assessment\"].json.position_size}`\n};\n\nreturn {\n  trade_update: updateTrade,\n  monitoring: monitoringRecord,\n  notification: notification,\n  workflow_id: $workflow.id,\n  execution_id: $execution.id\n};"
+      },
+      "id": "42e6bf5f-3cf0-4ead-8da5-e1dda3450088",
+      "name": "14. Init Monitoring",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "trades",
+        "columns": "status,fill_time",
+        "options": {}
+      },
+      "id": "038389f9-7cb0-44af-a026-78f325b250d2",
+      "name": "Update Trade Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        2448,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "schema": "public",
+        "table": "position_monitoring",
+        "columns": "trade_id,start_time,profit_target,stop_loss,delta_threshold,initial_spy_price,monitoring_active",
+        "options": {}
+      },
+      "id": "4cd0cfc7-9172-4cee-8595-75dc42d7d320",
+      "name": "Save Monitoring",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        2448,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "={{ $node[\"init-monitoring\"].json.notification.message }}",
+        "additionalFields": {}
+      },
+      "id": "4dc26138-e561-47f2-a67c-727360b31cf2",
+      "name": "Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2640,
+        -16
+      ],
+      "webhookId": "1b2ff94f-6552-4c04-8f2a-bf3617ac77c5"
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ $env.MONITORING_WORKFLOW_ID }}",
+        "options": {}
+      },
+      "id": "c22127ac-f14c-450f-9b94-5bea06e7cf2a",
+      "name": "Trigger Monitor Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        2848,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "minutes"
+      },
+      "id": "10dae9b3-f135-454f-8115-0e1002800985",
+      "name": "Wait 5 min",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        -176
+      ],
+      "webhookId": "86eb66b8-f746-49aa-87f5-689796983427"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4c1319ba-c15b-4585-b370-ea8f29ab4659",
+      "name": "No Strikes Error",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        1040,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "93ca5e13-3e25-4e9b-a181-4340bdb71ff6",
+      "name": "Time Cutoff Error",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        1648,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b554191f-ef31-428c-b481-7c88d7d1cc93",
+      "name": "Order Failed Error",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        2048,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "schema": "public",
+        "table": "workflow_errors",
+        "columns": "timestamp,workflow_name,error_type,error_message,context",
+        "options": {}
+      },
+      "id": "6c2a14d3-c815-49a3-af03-66f416b1048e",
+      "name": "Log Error",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        2448,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "18fee0c3-6414-4892-a429-8c55bd54e3c5",
+      "name": "Every Minute Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT t.*, pm.* FROM trades t\nJOIN position_monitoring pm ON t.id = pm.trade_id\nWHERE t.status = 'FILLED' \nAND pm.monitoring_active = true\nAND DATE(t.timestamp) = CURRENT_DATE",
+        "options": {}
+      },
+      "id": "50a926b4-5870-4b16-b587-ebee45711354",
+      "name": "Get Active Positions",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        112,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Monitor each position\n// Using Alpaca SDK to get current prices\n\nfrom alpaca.trading.client import TradingClient\nfrom alpaca.data.requests import OptionLatestQuoteRequest, StockLatestQuoteRequest\nfrom alpaca.data.historical.option import OptionHistoricalDataClient\nfrom alpaca.data.historical.stock import StockHistoricalDataClient\n\n// Initialize clients\nconst apiKey = $env.ALPACA_API_KEY;\nconst secretKey = $env.ALPACA_SECRET_KEY;\n\nconst tradingClient = new TradingClient(apiKey, secretKey, paper=true);\nconst optionDataClient = new OptionHistoricalDataClient(apiKey, secretKey);\nconst stockDataClient = new StockHistoricalDataClient(apiKey, secretKey);\n\n// Get position data\nconst position = $item.json;\n\n// Get current SPY price\nconst spyQuoteRequest = { symbol_or_symbols: \"SPY\" };\nconst spyQuote = await stockDataClient.get_stock_latest_quote(spyQuoteRequest);\nconst spyPrice = spyQuote.SPY.ask_price;\n\n// Get current option prices\nconst optionSymbols = [position.short_leg, position.long_leg];\nconst optionQuotesRequest = { symbol_or_symbols: optionSymbols };\nconst optionQuotes = await optionDataClient.get_option_latest_quote(optionQuotesRequest);\n\n// Calculate current spread value\nconst shortQuote = optionQuotes[position.short_leg];\nconst longQuote = optionQuotes[position.long_leg];\n\nconst shortMid = (shortQuote.bid_price + shortQuote.ask_price) / 2;\nconst longMid = (longQuote.bid_price + longQuote.ask_price) / 2;\nconst spreadValue = shortMid - longMid;\n\n// Calculate P&L\nconst initialCredit = position.credit_received;\nconst currentPnL = (initialCredit - spreadValue) * 100 * position.quantity;\nconst pnlPercentage = (currentPnL / (initialCredit * 100 * position.quantity)) * 100;\n\n// Calculate time to expiry\nconst now = new Date();\nconst marketClose = new Date();\nmarketClose.setHours(16, 0, 0, 0);\nconst hoursToExpiry = (marketClose - now) / (1000 * 60 * 60);\n\n// Simple delta approximation (would use Black-Scholes in production)\nconst moneyness = spyPrice / position.short_strike;\nconst shortDelta = -0.40 * Math.exp(-2 * (moneyness - 1) * (moneyness - 1));\n\n// Prepare snapshot data\nconst snapshot = {\n  trade_id: position.trade_id,\n  timestamp: new Date().toISOString(),\n  spy_price: spyPrice,\n  spread_bid: shortQuote.bid_price - longQuote.ask_price,\n  spread_ask: shortQuote.ask_price - longQuote.bid_price,\n  spread_mid: spreadValue,\n  current_pnl: currentPnL,\n  pnl_percentage: pnlPercentage,\n  short_delta: shortDelta,\n  long_delta: shortDelta * 0.5, // Approximation\n  time_to_expiry: hoursToExpiry,\n  theta_decay: initialCredit * 0.1 * (1 / Math.sqrt(hoursToExpiry))\n};\n\n// Check exit conditions\nlet shouldClose = false;\nlet closeReason = '';\n\nif (pnlPercentage >= 50) {\n  shouldClose = true;\n  closeReason = 'PROFIT_TARGET';\n} else if (pnlPercentage <= -200) {\n  shouldClose = true;\n  closeReason = 'STOP_LOSS';\n} else if (shortDelta <= -0.60) {\n  shouldClose = true;\n  closeReason = 'DELTA_BREACH';\n}\n\nreturn {\n  position: position,\n  snapshot: snapshot,\n  should_close: shouldClose,\n  close_reason: closeReason,\n  spy_movement: ((spyPrice - position.initial_spy_price) / position.initial_spy_price) * 100\n};"
+      },
+      "id": "8a1b5102-99c9-4708-b378-bf694a288562",
+      "name": "Monitor Position",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        304,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "schema": "public",
+        "table": "position_snapshots",
+        "columns": "trade_id,timestamp,spy_price,spread_bid,spread_ask,spread_mid,current_pnl,pnl_percentage,short_delta,long_delta,time_to_expiry,theta_decay",
+        "options": {}
+      },
+      "id": "53268197-07eb-4203-a1cb-6c00d8fc020c",
+      "name": "Save Snapshot",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        512,
+        752
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "should-close",
+              "leftValue": "={{ $node[\"monitor-position\"].json.should_close }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f40c1666-cd64-4221-91bc-441d9c41ef1a",
+      "name": "Should Close?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        512,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Close the position\n// Create reverse order to close spread\n\nfrom alpaca.trading.requests import MarketOrderRequest\nfrom alpaca.trading.enums import OrderSide, OrderClass, TimeInForce\n\nconst apiKey = $env.ALPACA_API_KEY;\nconst secretKey = $env.ALPACA_SECRET_KEY;\nconst tradingClient = new TradingClient(apiKey, secretKey, paper=true);\n\nconst position = $node[\"monitor-position\"].json.position;\nconst snapshot = $node[\"monitor-position\"].json.snapshot;\nconst closeReason = $node[\"monitor-position\"].json.close_reason;\n\n// Create closing order (reverse of opening)\nconst closingOrder = {\n  symbol: \"SPY\",\n  qty: position.quantity,\n  order_class: \"mleg\",\n  time_in_force: \"day\",\n  legs: [\n    {\n      symbol: position.short_leg,\n      side: \"buy\",  // Buy back the short\n      ratio_qty: 1\n    },\n    {\n      symbol: position.long_leg,\n      side: \"sell\", // Sell the long\n      ratio_qty: 1\n    }\n  ]\n};\n\ntry {\n  // Submit closing order\n  const closeOrder = await tradingClient.submit_order(closingOrder);\n  \n  // Prepare update data\n  const updateData = {\n    trade_id: position.trade_id,\n    status: 'CLOSING',\n    close_order_id: closeOrder.id,\n    close_time: new Date().toISOString(),\n    close_reason: closeReason,\n    final_pnl: snapshot.current_pnl,\n    final_pnl_percentage: snapshot.pnl_percentage,\n    monitoring_active: false\n  };\n  \n  // Notification message\n  const notification = {\n    type: 'POSITION_CLOSING',\n    message: `🔔 Closing 0DTE Spread - ${closeReason}\\n` +\n             `P&L: $${snapshot.current_pnl.toFixed(2)} (${snapshot.pnl_percentage.toFixed(1)}%)\\n` +\n             `SPY: $${snapshot.spy_price.toFixed(2)}\\n` +\n             `Reason: ${closeReason}`\n  };\n  \n  return {\n    success: true,\n    close_order: closeOrder,\n    update_data: updateData,\n    notification: notification\n  };\n  \n} catch (error) {\n  return {\n    success: false,\n    error: error.message,\n    position_id: position.trade_id\n  };\n}"
+      },
+      "id": "5ad148da-6d42-41f6-bfe1-7fe07f8c9ad5",
+      "name": "Close Position",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "trades",
+        "columns": "status,close_time,close_reason,final_pnl",
+        "options": {}
+      },
+      "id": "2a5c43c4-87cc-4feb-88f1-a0ba3210921d",
+      "name": "Update Trade",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        912,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "position_monitoring",
+        "columns": "monitoring_active",
+        "options": {}
+      },
+      "id": "11e1183a-35d1-40f0-8596-4570b644b056",
+      "name": "Deactivate Monitoring",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        912,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "={{ $node[\"close-position\"].json.notification.message }}",
+        "additionalFields": {}
+      },
+      "id": "624e05a4-83a1-431d-925c-2e23e261174c",
+      "name": "Notify Close",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1104,
+        544
+      ],
+      "webhookId": "e15f398b-5ff2-4cf9-8cb4-f10f4dcae306"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "pnl-alert",
+              "leftValue": "={{ Math.abs($node[\"monitor-position\"].json.snapshot.pnl_percentage) }}",
+              "rightValue": 40,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bc5b44ef-658b-45b9-ba79-65a0f18db7a7",
+      "name": "Check Alerts",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        704,
+        752
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=⚠️ 0DTE Alert\\nP&L: {{ $node[\"monitor-position\"].json.snapshot.pnl_percentage.toFixed(1) }}%\\nPosition: {{ $node[\"monitor-position\"].json.position.short_leg }}",
+        "additionalFields": {}
+      },
+      "id": "32d4ccf9-7a08-4f47-9a67-d2613ac25480",
+      "name": "Send Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        848
+      ],
+      "webhookId": "81b53c57-7d51-4c4c-a85f-686e88d4e4db"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-24T16:18:07.000Z",
+  "versionId": "a4b3d3e6-c471-4e63-9b3c-afefb4f71111"
+}
