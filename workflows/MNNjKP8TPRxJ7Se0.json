@@ -1,0 +1,160 @@
+{
+  "active": false,
+  "connections": {
+    "Test Data": {
+      "main": [
+        [
+          {
+            "node": "Scrape website with Scrappey",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Test Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T10:16:28.560Z",
+  "id": "MNNjKP8TPRxJ7Se0",
+  "isArchived": false,
+  "meta": {
+    "templateId": "2299"
+  },
+  "name": "Scrape every url on the web without getting blocked by Anti-Bot technologies with Scrappey",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "edf41c95-2421-4008-9097-73687fe4bbfc",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e0e09aa8-2374-43f7-87bf-f2ffcac8e1d9",
+              "name": "name",
+              "type": "string",
+              "value": "n8n"
+            },
+            {
+              "id": "2086908e-c301-4392-9cf6-b6461e11dcd4",
+              "name": "url",
+              "type": "string",
+              "value": "https://n8n.io/"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bde8d167-b7c4-4fc8-a256-b022bb33347d",
+      "name": "Test Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        800,
+        240
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "content": "## Test Data \n\nUsing n8n.io as test url.\n\nFor production use, you have to connect your data here."
+      },
+      "id": "e53d7ec5-f98a-41fe-b082-00e2f680dcea",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        752,
+        48
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Web Scraping \n\nUsing **Scrappey's** API to scrape every website.\n\nDon't get blocked again by anti-bot technologies while scraping the web.\n\n**Setup:**\nReplace YOUR_API_KEY with [your Scrappey API key.](https://scrappey.com/?ref=n8n)\n",
+        "height": 255.7976193268613,
+        "width": 389
+      },
+      "id": "835c2a8c-edd6-43dc-b898-e2c49dd65beb",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        -48
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://publisher.scrappey.com/api/v1",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "YOUR_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "cmd",
+              "value": "request.get"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.url }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "7f8b3077-ec09-4fec-a4f0-f6b7f3f7ec0e",
+      "name": "Scrape website with Scrappey",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1280,
+        240
+      ],
+      "typeVersion": 4.2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T10:16:28.560Z",
+  "versionId": "3cc43c72-ee0d-41d4-8dda-b08bb2893361"
+}
