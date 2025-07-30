@@ -1,0 +1,385 @@
+{
+  "active": false,
+  "connections": {
+    "Get all files": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Photoroom API Remove Background",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Move to Original",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to Original": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily at 08:00 am": {
+      "main": [
+        [
+          {
+            "node": "Get all files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Remove Background": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Photoroom API Remove Background": {
+      "main": [
+        [
+          {
+            "node": "Save to Remove Background",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T01:47:34.292Z",
+  "id": "HafcZjDGd28HZYuC",
+  "isArchived": false,
+  "meta": {
+    "templateId": "4398"
+  },
+  "name": "📸 Automate Photo Background Removal with Photoroom API and Google Drive",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b2441a46-bd10-4c0c-a804-3be138d2fd8e",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        1168,
+        592
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "c98d1021-81f1-43e9-8001-8708a16c5fdc",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        1200,
+        1232
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultUrl": "",
+          "cachedResultName": "Original"
+        }
+      },
+      "id": "d6b4b139-1751-4e53-8bd3-e86d0b427301",
+      "name": "Move to Original",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1888,
+        1248
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "result-sandbox-mode.png",
+        "name": "={{ $json.name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultUrl": "",
+          "cachedResultName": "Remove Background"
+        },
+        "options": {}
+      },
+      "id": "0be7ea89-f48b-4844-ad2a-29b7e23e0fd2",
+      "name": "Save to Remove Background",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1856,
+        672
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "options": {}
+      },
+      "id": "73369386-e3c9-452d-a89f-6bf66072d002",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1408,
+        672
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "1j1wl00y4RAsRRecU74XxR6SpncYxMqdA",
+            "cachedResultUrl": "",
+            "cachedResultName": ""
+          },
+          "whatToSearch": "files"
+        },
+        "options": {}
+      },
+      "id": "b127c813-9ae3-48d2-85da-36d2db1c6e63",
+      "name": "Get all files",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        832,
+        592
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "content": "### 1. Collect all original images file names\nTrigger the workflow to collect the names of all the images you want to process that are stored in a specific folder.\n\n### How to set up?\n- **Search all files of a specific Google Drive Folder**:\n   1. Add your Google Drive API credentials to access the Google Drive Folders\n   2. Select the folder that contains all the files you want to process\n[Learn more about the Google Drive API](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googledrive/)\n- **Prepare the subfolders**:\n   - Create a sub-folder to store processed images named: **Remove Background**\n   - Create a sub-folder to store the original files after processing name: **Original**\n  \n\n",
+        "height": 560,
+        "width": 600,
+        "color": 7
+      },
+      "id": "c3546db3-2a28-4f98-87bd-1556c8ee3e8c",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "### 2. Remove backgrounds with Photoroom API & save the results in the sub-folder **Remove Background**\nFor each image, you use the API to remove the background. The result is saved in the sub-folder **Remove Background**.\n\n### How to set up?\n- **Download file from Google Drive**:\n   1. Add your Google Drive API credentials to access the Google Drive Folders\n   2. Select the sub-folder location\n[Learn more about the Google Drive API](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googledrive/)\n- **Remove Background with Photoroom API**:\n   1. Add your Photoroom API key \n[Learn more about the Photoroom API](https://docs.photoroom.com/)\n\n*You can test the API with the free sandbox mode that enables 1,000 calls per month.*\n\n",
+        "height": 620,
+        "width": 1000,
+        "color": 7
+      },
+      "id": "18181d47-99e1-4ec6-9f0c-4e46c5f42315",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://image-api.photoroom.com/v2/edit",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "image/png, application/json"
+            },
+            {
+              "name": "x-api-key"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "shadow.mode",
+              "value": "ai.soft"
+            },
+            {
+              "name": "background.color",
+              "value": "FFFFFF"
+            },
+            {
+              "name": "padding",
+              "value": "0.1"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "imageFile",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "result-sandbox-mode.png"
+            }
+          }
+        }
+      },
+      "id": "91ffb1ae-3a55-460b-8d29-6f28ae33c83d",
+      "name": "Photoroom API Remove Background",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1632,
+        672
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "### 3. Move Processed Images \nAfter processing, the images are moved to the sub-folder **Original**.\n\n### How to set up?\n- **Move file in Google Drive**:\n   1. Add your Google Drive API credentials to access the Google Drive Folders\n   2. Select the sub-folder \n[Learn more about the Google Drive API](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googledrive/)\n- **Remove Background with Photoroom API**:\n   1. Add your Photoroom API key \n[Learn more about the Photoroom API](https://docs.photoroom.com/)\n\n*You can test the API with the free sandbox mode that enables 1,000 calls per month.*\n\n",
+        "height": 560,
+        "width": 1000,
+        "color": 7
+      },
+      "id": "5c99a353-1a07-400e-996a-fbd83c735dce",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        912
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "3a7e0bcd-eb5a-4609-9359-8e632cace6d3",
+      "name": "Daily at 08:00 am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        608,
+        592
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "### [📺Complete Tutorial](https://www.youtube.com/watch?v=gBn9wd0fJ54)\n![Thumbnail](https://www.samirsaci.com/content/images/2025/05/image-4.png)\n",
+        "height": 460,
+        "width": 660
+      },
+      "id": "8281445b-9cf1-4e43-8a19-9e3b26b8d67e",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2128,
+        240
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T01:47:34.292Z",
+  "versionId": "c64788ac-280f-48f1-ab5a-bd55cfc1f898"
+}
