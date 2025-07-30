@@ -1,0 +1,115 @@
+{
+  "active": false,
+  "connections": {
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-30T09:25:41.308Z",
+  "id": "ya3aZ5cricauLLW2",
+  "isArchived": true,
+  "meta": {
+    "templateId": "6303"
+  },
+  "name": "Get Blockchain Insights from Chat using GPT-4 and Nansen MCP 2",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "acb45838-b8bf-4b50-920a-694ae0778d60",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        368,
+        240
+      ],
+      "webhookId": "8d13f3c6-4adf-43df-bbd2-a305f5369ec0",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are a helpful assistant with access to Nansen MCP Tool. Nansen MCP tool allows you to understand everything that is happening with the blockchain.\n\ntoday: {{ $now.toISO() }}"
+        }
+      },
+      "id": "b875a807-ab0b-4b27-bcd4-b876a9162858",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        592,
+        240
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {},
+      "id": "1208d743-f57e-45d1-a645-cd0f381c73ee",
+      "name": "MCP Client",
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "position": [
+        752,
+        464
+      ],
+      "typeVersion": 1.1,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "id": "4886277e-a5fb-40db-b7bf-442c40ce90f6",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        624,
+        464
+      ],
+      "typeVersion": 1.2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-30T09:28:25.000Z",
+  "versionId": "e7dc8dca-49e0-43d1-a364-3cf944fdf5c8"
+}
