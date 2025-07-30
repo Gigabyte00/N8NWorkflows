@@ -1,0 +1,618 @@
+{
+  "active": false,
+  "connections": {
+    "Market Hours Schedule": {
+      "main": [
+        [
+          {
+            "node": "Fetch SPY Price",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch SPY Price": {
+      "main": [
+        [
+          {
+            "node": "Movement Calculator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Movement Calculator": {
+      "main": [
+        [
+          {
+            "node": "Account Validator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Account Validator": {
+      "main": [
+        [
+          {
+            "node": "Get Account Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Account Info": {
+      "main": [
+        [
+          {
+            "node": "Buying Power Validator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buying Power Validator": {
+      "main": [
+        [
+          {
+            "node": "Trading Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trading Gate": {
+      "main": [
+        [
+          {
+            "node": "Get Options Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Validation Failed Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Options Chain": {
+      "main": [
+        [
+          {
+            "node": "Enhanced Strike Selection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enhanced Strike Selection": {
+      "main": [
+        [
+          {
+            "node": "Place Credit Spread Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Place Credit Spread Order": {
+      "main": [
+        [
+          {
+            "node": "Trade Logger",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3:45 PM Close Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Current Positions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Current Positions": {
+      "main": [
+        [
+          {
+            "node": "Position Closer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Position Closer": {
+      "main": [
+        [
+          {
+            "node": "Submit Close Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Status Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status Aggregator": {
+      "main": [
+        [
+          {
+            "node": "Return Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-21T20:21:23.773Z",
+  "id": "7V6xeDLKgdDtXvxz",
+  "isArchived": true,
+  "meta": null,
+  "name": "Alpaca-SPY1.2% v2",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "011651f8-2ca9-449a-b9ff-7d773890d36e",
+      "name": "Market Hours Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -3200,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://data.alpaca.markets/v2/stocks/snapshots?symbols=spy&feed=iex",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "options": {
+          "timeout": 5000
+        }
+      },
+      "id": "40bfd22a-0315-434e-8b91-6703b04cef8d",
+      "name": "Fetch SPY Price",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -2976,
+        -128
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "BSQ7fqLcn8IBUJ1y",
+          "name": "Header Auth account"
+        },
+        "httpCustomAuth": {
+          "id": "Z9re7XZNPhNtp4Ld",
+          "name": "Custom Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Movement Calculator Node\nconst spyData = $input.item.json.SPY;\nconst currentPrice = spyData.latestTrade.p;\nconst openPrice = spyData.dailyBar.o;\n\n// Calculate percentage change\nconst percentChange = ((currentPrice - openPrice) / openPrice) * 100;\n\n// Store data in workflow static data for status tracking\n$workflow.staticData.currentPrice = currentPrice;\n$workflow.staticData.openingPrice = openPrice;\n$workflow.staticData.percentChange = percentChange;\n$workflow.staticData.lastPriceDate = new Date().toISOString();\n\n// Determine signal based on movement\nlet signal = null;\n\nif (percentChange >= 1.2) {\n  signal = 'bearish_credit_spread'; // Market moved up significantly, sell call spreads\n} else if (percentChange <= -1.2) {\n  signal = 'bullish_credit_spread'; // Market moved down significantly, sell put spreads\n}\n\n// Check if we've already traded today\nconst today = new Date().toDateString();\nconst hasTraded = $workflow.staticData.lastTradeDate === today;\n\nreturn [{\n  json: {\n    currentPrice,\n    openPrice,\n    percentChange: parseFloat(percentChange.toFixed(2)),\n    signal,\n    hasTraded,\n    shouldTrade: signal !== null && !hasTraded,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "5be59f42-d2e1-435a-a518-75d1c3758b2a",
+      "name": "Movement Calculator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2752,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Account Validator Node\nconst movementData = $input.item.json;\n\n// Only validate if we have a trading signal\nif (!movementData.shouldTrade) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: 'No trading signal or already traded today',\n      skipTrading: true\n    }\n  }];\n}\n\n// Check circuit breaker status\nif ($workflow.staticData.circuitBreakerTripped) {\n  const tripTime = new Date($workflow.staticData.circuitBreakerTime);\n  const now = new Date();\n  const hoursSinceTrigger = (now - tripTime) / (1000 * 60 * 60);\n  \n  // Reset circuit breaker after 4 hours\n  if (hoursSinceTrigger > 4) {\n    $workflow.staticData.circuitBreakerTripped = false;\n    $workflow.staticData.circuitBreakerTime = null;\n  } else {\n    return [{\n      json: {\n        ...movementData,\n        validationPassed: false,\n        validationReason: `Circuit breaker active (${hoursSinceTrigger.toFixed(1)}h remaining)`,\n        skipTrading: true\n      }\n    }];\n  }\n}\n\n// Check market hours (basic validation)\nconst now = new Date();\nconst currentHour = now.getHours();\nconst currentMinutes = now.getMinutes();\nconst currentTime = currentHour * 100 + currentMinutes; // HHMM format\n\n// Market hours: 9:30 AM - 4:00 PM ET (930 - 1600)\nif (currentTime < 930 || currentTime >= 1600) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: 'Outside market hours',\n      skipTrading: true\n    }\n  }];\n}\n\n// Validate movement threshold (additional check)\nconst absMovement = Math.abs(movementData.percentChange);\nif (absMovement < 1.2) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: `Movement ${absMovement.toFixed(2)}% below 1.2% threshold`,\n      skipTrading: true\n    }\n  }];\n}\n\n// Validate movement isn't too extreme (circuit breaker)\nif (absMovement > 10) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: `Movement ${absMovement.toFixed(2)}% too extreme (>10%)`,\n      skipTrading: true\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...movementData,\n    validationPassed: true,\n    validationReason: 'All pre-checks passed',\n    skipTrading: false\n  }\n}];"
+      },
+      "id": "d5f463ff-ea9e-488d-8c69-ec6d4e2b3aff",
+      "name": "Account Validator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2528,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://paper-api.alpaca.markets/v2/account",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "options": {
+          "timeout": 5000
+        }
+      },
+      "id": "fbd132e1-0339-4bea-bc32-7fc86ab286d2",
+      "name": "Get Account Info",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -2304,
+        -128
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "Z9re7XZNPhNtp4Ld",
+          "name": "Custom Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Buying Power Validator Node\nconst accountData = $input.item.json;\nconst movementData = $node[\"Account Validator\"].json;\n\n// Skip if previous validation failed\nif (!movementData.validationPassed) {\n  return [{\n    json: {\n      ...movementData,\n      accountData: accountData\n    }\n  }];\n}\n\n// Extract account information\nconst buyingPower = parseFloat(accountData.buying_power || 0);\nconst equity = parseFloat(accountData.equity || 0);\nconst dayTradingBuyingPower = parseFloat(accountData.daytrading_buying_power || 0);\n\n// Check if options trading is enabled\nconst optionsTradingLevel = accountData.options_trading_level || 'none';\nif (optionsTradingLevel === 'none' || optionsTradingLevel === null) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: 'Options trading not enabled on account',\n      skipTrading: true,\n      accountData: {\n        buyingPower,\n        equity,\n        optionsTradingLevel\n      }\n    }\n  }];\n}\n\n// Minimum equity requirement for options trading\nif (equity < 2000) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: `Insufficient equity: $${equity.toFixed(2)} (minimum $2,000 required)`,\n      skipTrading: true,\n      accountData: {\n        buyingPower,\n        equity,\n        optionsTradingLevel\n      }\n    }\n  }];\n}\n\n// Estimate required buying power for credit spread\nconst estimatedMarginRequired = 100;\nconst availableBuyingPower = Math.min(buyingPower, dayTradingBuyingPower);\n\nif (availableBuyingPower < estimatedMarginRequired) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: `Insufficient buying power: $${availableBuyingPower.toFixed(2)} (estimated $${estimatedMarginRequired} required)`,\n      skipTrading: true,\n      accountData: {\n        buyingPower,\n        equity,\n        optionsTradingLevel,\n        availableBuyingPower\n      }\n    }\n  }];\n}\n\n// Check for reasonable position size relative to account\nconst maxRiskPerTrade = equity * 0.02; // 2% of equity max risk\nif (estimatedMarginRequired > maxRiskPerTrade) {\n  return [{\n    json: {\n      ...movementData,\n      validationPassed: false,\n      validationReason: `Risk too high: $${estimatedMarginRequired} exceeds 2% of equity ($${maxRiskPerTrade.toFixed(2)})`,\n      skipTrading: true,\n      accountData: {\n        buyingPower,\n        equity,\n        optionsTradingLevel,\n        availableBuyingPower,\n        maxRiskPerTrade\n      }\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...movementData,\n    validationPassed: true,\n    validationReason: 'Account validation passed',\n    skipTrading: false,\n    accountData: {\n      buyingPower,\n      equity,\n      optionsTradingLevel,\n      availableBuyingPower,\n      maxRiskPerTrade,\n      estimatedMarginRequired\n    }\n  }\n}];"
+      },
+      "id": "df88c1aa-1a4c-4043-bd75-6a7e865a58da",
+      "name": "Buying Power Validator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2080,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "trading-gate-condition",
+              "leftValue": "={{ $json.validationPassed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            },
+            {
+              "id": "skip-trading-condition",
+              "leftValue": "={{ $json.skipTrading }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b325ed6b-3ed0-4520-a099-a88d41f216b6",
+      "name": "Trading Gate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1856,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://data.alpaca.markets/v1beta1/options/snapshots/SPY?feed=indicative&limit=100",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "811122f0-6cd9-478a-80ac-8d043bd6bf9c",
+      "name": "Get Options Chain",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -1632,
+        -288
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "Z9re7XZNPhNtp4Ld",
+          "name": "Custom Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Enhanced Strike Selection with Validation\nconst optionsData = $input.item.json;\nconst validationData = $node[\"Buying Power Validator\"].json;\n\n// Skip if validation failed\nif (!validationData.validationPassed) {\n  return [{\n    json: {\n      ...validationData,\n      strikeSelectionSkipped: true\n    }\n  }];\n}\n\nconst currentPrice = validationData.currentPrice;\nconst signal = validationData.signal;\nconst maxRiskPerTrade = validationData.accountData.maxRiskPerTrade;\n\n// Parse options chain\nlet optionsChain = [];\nif (optionsData.SPY && optionsData.SPY.contracts) {\n  optionsChain = Object.entries(optionsData.SPY.contracts).map(([symbol, data]) => ({\n    symbol: symbol,\n    type: symbol.includes('C') ? 'call' : 'put',\n    strike_price: extractStrikeFromSymbol(symbol),\n    last_quote: data.latest_quote || {},\n    implied_volatility: data.greeks?.implied_volatility || 0,\n    ...data\n  }));\n}\n\nfunction extractStrikeFromSymbol(symbol) {\n  const match = symbol.match(/[CP](\\d{8})$/);\n  return match ? (parseInt(match[1]) / 1000).toString() : null;\n}\n\nif (!optionsChain || optionsChain.length === 0) {\n  return [{\n    json: {\n      ...validationData,\n      validationPassed: false,\n      validationReason: 'No options chain data available',\n      skipTrading: true\n    }\n  }];\n}\n\n// Filter for same-day expiration with liquidity requirements\nconst today = new Date();\nconst todayStr = today.toISOString().substring(2, 10).replace(/-/g, '');\n\nconst todayOptions = optionsChain.filter(opt => {\n  const symbolMatch = opt.symbol.match(/SPY(\\d{6})[CP]/);\n  const hasLiquidity = opt.last_quote.bid > 0.05 && \n                      opt.last_quote.ask > 0 && \n                      (opt.last_quote.ask - opt.last_quote.bid) <= opt.last_quote.bid * 0.5;\n  \n  return symbolMatch && symbolMatch[1] === todayStr && hasLiquidity;\n});\n\nif (todayOptions.length === 0) {\n  return [{\n    json: {\n      ...validationData,\n      validationPassed: false,\n      validationReason: 'No liquid same-day options available',\n      skipTrading: true\n    }\n  }];\n}\n\n// Find optimal strikes with risk validation\nconst atmStrike = Math.round(currentPrice * 2) / 2;\nlet shortStrike, longStrike, spreadType;\n\nif (signal === 'bearish_credit_spread') {\n  const calls = todayOptions.filter(opt => opt.type === 'call')\n    .sort((a, b) => parseFloat(a.strike_price) - parseFloat(b.strike_price));\n  \n  shortStrike = calls.find(opt => parseFloat(opt.strike_price) >= atmStrike);\n  if (shortStrike) {\n    const spreadWidths = [0.5, 1.0, 2.0];\n    for (const width of spreadWidths) {\n      longStrike = calls.find(opt => \n        parseFloat(opt.strike_price) === parseFloat(shortStrike.strike_price) + width\n      );\n      if (longStrike) break;\n    }\n  }\n  spreadType = 'call_credit_spread';\n  \n} else if (signal === 'bullish_credit_spread') {\n  const puts = todayOptions.filter(opt => opt.type === 'put')\n    .sort((a, b) => parseFloat(b.strike_price) - parseFloat(a.strike_price));\n  \n  shortStrike = puts.find(opt => parseFloat(opt.strike_price) <= atmStrike);\n  if (shortStrike) {\n    const spreadWidths = [0.5, 1.0, 2.0];\n    for (const width of spreadWidths) {\n      longStrike = puts.find(opt => \n        parseFloat(opt.strike_price) === parseFloat(shortStrike.strike_price) - width\n      );\n      if (longStrike) break;\n    }\n  }\n  spreadType = 'put_credit_spread';\n}\n\nif (!shortStrike || !longStrike) {\n  return [{\n    json: {\n      ...validationData,\n      validationPassed: false,\n      validationReason: `Unable to find suitable liquid strikes for ${signal}`,\n      skipTrading: true\n    }\n  }];\n}\n\n// Calculate spread metrics with risk validation\nconst shortBid = parseFloat(shortStrike.last_quote.bid);\nconst shortAsk = parseFloat(shortStrike.last_quote.ask);\nconst longBid = parseFloat(longStrike.last_quote.bid);\nconst longAsk = parseFloat(longStrike.last_quote.ask);\n\nconst shortMidPrice = (shortBid + shortAsk) / 2;\nconst longMidPrice = (longBid + longAsk) / 2;\nconst netCredit = shortMidPrice - longMidPrice;\nconst strikeWidth = Math.abs(parseFloat(shortStrike.strike_price) - parseFloat(longStrike.strike_price));\nconst maxLoss = (strikeWidth * 100) - (netCredit * 100);\n\n// Risk validation\nif (maxLoss > maxRiskPerTrade) {\n  return [{\n    json: {\n      ...validationData,\n      validationPassed: false,\n      validationReason: `Max loss $${maxLoss.toFixed(2)} exceeds risk limit $${maxRiskPerTrade.toFixed(2)}`,\n      skipTrading: true\n    }\n  }];\n}\n\n// Credit validation\nif (netCredit < 0.10) {\n  return [{\n    json: {\n      ...validationData,\n      validationPassed: false,\n      validationReason: `Net credit $${netCredit.toFixed(2)} too low (minimum $0.10)`,\n      skipTrading: true\n    }\n  }];\n}\n\n// Return on risk validation\nconst returnOnRisk = (netCredit * 100) / maxLoss;\nif (returnOnRisk < 0.10) {\n  return [{\n    json: {\n      ...validationData,\n      validationPassed: false,\n      validationReason: `Return on risk ${(returnOnRisk * 100).toFixed(1)}% too low (minimum 10%)`,\n      skipTrading: true\n    }\n  }];\n}\n\nconst limitPrice = Math.max(0.05, parseFloat((netCredit * 0.85).toFixed(2)));\n\nreturn [{\n  json: {\n    ...validationData,\n    signal,\n    spreadType,\n    shortStrike: {\n      symbol: shortStrike.symbol,\n      strike: shortStrike.strike_price,\n      bid: shortBid,\n      ask: shortAsk,\n      midPrice: shortMidPrice.toFixed(2)\n    },\n    longStrike: {\n      symbol: longStrike.symbol,\n      strike: longStrike.strike_price,\n      bid: longBid,\n      ask: longAsk,\n      midPrice: longMidPrice.toFixed(2)\n    },\n    limitPrice,\n    netCredit: netCredit.toFixed(2),\n    strikeWidth,\n    maxLoss: maxLoss.toFixed(2),\n    returnOnRisk: (returnOnRisk * 100).toFixed(1),\n    atmStrike,\n    currentPrice,\n    validationPassed: true,\n    validationReason: 'Strike selection completed with risk validation',\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "9f5a1d8e-bdbe-4451-8118-916a2818629d",
+      "name": "Enhanced Strike Selection",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1408,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://paper-api.alpaca.markets/v2/orders",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "symbol",
+              "value": "SPY"
+            },
+            {
+              "name": "qty",
+              "value": "1"
+            },
+            {
+              "name": "side",
+              "value": "sell"
+            },
+            {
+              "name": "type",
+              "value": "limit"
+            },
+            {
+              "name": "time_in_force",
+              "value": "day"
+            },
+            {
+              "name": "limit_price",
+              "value": "={{ $json.limitPrice }}"
+            },
+            {
+              "name": "order_class",
+              "value": "mleg"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "1e796535-a747-41e6-85c1-eba7c798b894",
+      "name": "Place Credit Spread Order",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -1184,
+        -288
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "Z9re7XZNPhNtp4Ld",
+          "name": "Custom Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validation Failed Handler\nconst validationData = $input.item.json;\n\n// Log the validation failure\nconst logEntry = {\n  timestamp: new Date().toISOString(),\n  reason: validationData.validationReason,\n  currentPrice: validationData.currentPrice,\n  percentChange: validationData.percentChange,\n  signal: validationData.signal,\n  accountData: validationData.accountData || 'Not available'\n};\n\n// Store validation failures for monitoring\nif (!$workflow.staticData.validationFailures) {\n  $workflow.staticData.validationFailures = [];\n}\n$workflow.staticData.validationFailures.push(logEntry);\n\n// Keep only last 50 validation failures\nif ($workflow.staticData.validationFailures.length > 50) {\n  $workflow.staticData.validationFailures.splice(0, \n    $workflow.staticData.validationFailures.length - 50\n  );\n}\n\nconsole.log(`Trading validation failed: ${validationData.validationReason}`);\n\nreturn [{\n  json: {\n    success: false,\n    action: 'validation_failed',\n    reason: validationData.validationReason,\n    logEntry,\n    message: `Trading skipped due to validation failure: ${validationData.validationReason}`\n  }\n}];"
+      },
+      "id": "66dcb0c2-15d5-4e85-8321-8d54a404873e",
+      "name": "Validation Failed Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1632,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process order response and update workflow state\nconst orderResponse = $input.item.json;\nconst strikeData = $node[\"Enhanced Strike Selection\"].json;\nconst movementData = $node[\"Movement Calculator\"].json;\n\n// Mark that we've traded today\nconst today = new Date().toDateString();\n$workflow.staticData.lastTradeDate = today;\n\n// Store trade details\nconst tradeRecord = {\n  orderId: orderResponse.id,\n  symbol: 'SPY',\n  spreadType: strikeData.spreadType,\n  shortStrike: strikeData.shortStrike,\n  longStrike: strikeData.longStrike,\n  limitPrice: strikeData.limitPrice,\n  maxLoss: strikeData.maxLoss,\n  returnOnRisk: strikeData.returnOnRisk,\n  triggerPrice: movementData.currentPrice,\n  triggerMovement: movementData.percentChange,\n  timestamp: new Date().toISOString(),\n  status: orderResponse.status\n};\n\n// Add to trade history\nconst tradeHistory = $workflow.staticData.tradeHistory || [];\ntradeHistory.push(tradeRecord);\n$workflow.staticData.tradeHistory = tradeHistory;\n\nreturn [{\n  json: {\n    success: true,\n    orderId: orderResponse.id,\n    orderStatus: orderResponse.status,\n    tradeRecord,\n    message: `${strikeData.spreadType} order placed successfully for ${strikeData.limitPrice} credit`\n  }\n}];"
+      },
+      "id": "48cc5eac-e8a9-4210-a0e3-54488e5faa56",
+      "name": "Trade Logger",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -960,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression"
+            }
+          ]
+        }
+      },
+      "id": "2888e937-d2b2-4264-af82-995955d35d00",
+      "name": "3:45 PM Close Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -3184,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://paper-api.alpaca.markets/v2/positions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "APCA-API-KEY-ID",
+              "value": "={{$credentials.alpaca.apiKeyId}}"
+            },
+            {
+              "name": "APCA-API-SECRET-KEY",
+              "value": "={{$credentials.alpaca.apiSecretKey}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "36bdf0e0-2ea3-40f3-9326-f16ffb5fd724",
+      "name": "Get Current Positions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -2960,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter for today's SPY options positions\nconst positions = $input.item.json;\nconst today = new Date();\nconst todayStr = today.toISOString().substring(0, 10).replace(/-/g, '');\n\n// Filter SPY options expiring today\nconst todayOptions = positions.filter(pos => {\n  if (pos.asset_class !== 'us_option' || !pos.symbol.includes('SPY')) {\n    return false;\n  }\n  \n  // Extract expiration date from option symbol (YYMMDD format)\n  const symbolMatch = pos.symbol.match(/SPY(\\d{6})[CP]/);\n  if (!symbolMatch) return false;\n  \n  const expirationStr = symbolMatch[1];\n  // Convert YYMMDD to YYYYMMDD\n  const fullYear = '20' + expirationStr.substring(0, 2);\n  const fullDate = fullYear + expirationStr.substring(2);\n  \n  return fullDate === todayStr;\n});\n\nif (todayOptions.length === 0) {\n  return [{\n    json: {\n      action: 'no_positions_to_close',\n      message: 'No SPY options positions expiring today'\n    }\n  }];\n}\n\n// Create closing orders for each position\nconst closingOrders = todayOptions.map(position => {\n  const qty = Math.abs(parseFloat(position.qty));\n  const side = position.side === 'long' ? 'sell' : 'buy';\n  const positionIntent = side === 'sell' ? 'sell_to_close' : 'buy_to_close';\n  \n  return {\n    symbol: position.symbol,\n    qty: qty.toString(),\n    side: side,\n    type: 'market',\n    time_in_force: 'day',\n    position_intent: positionIntent\n  };\n});\n\nreturn closingOrders.map(order => ({ json: order }));"
+      },
+      "id": "798d5fd4-924e-4097-86c4-4f1b0b1c30f9",
+      "name": "Position Closer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2736,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://paper-api.alpaca.markets/v2/orders",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "APCA-API-KEY-ID",
+              "value": "={{$credentials.alpaca.apiKeyId}}"
+            },
+            {
+              "name": "APCA-API-SECRET-KEY",
+              "value": "={{$credentials.alpaca.apiSecretKey}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "5b936aa0-9ac8-4648-ac64-40edf31b228f",
+      "name": "Submit Close Orders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -2512,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "path": "spy-trading-status",
+        "options": {}
+      },
+      "id": "20117ffe-2cf5-4863-88c3-1f08a642b1a1",
+      "name": "Status Dashboard",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        -3184,
+        1376
+      ],
+      "webhookId": "407f6e6b-4ad7-4e35-8f1a-1826bb729c9c"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate system status and trading statistics\nif (!$workflow.staticData) {\n  $workflow.staticData = {};\n}\n\nconst systemStatus = {\n  timestamp: new Date().toISOString(),\n  system: {\n    status: 'active',\n    lastUpdate: new Date().toISOString(),\n    circuitBreakerStatus: $workflow.staticData.circuitBreakerTripped || false\n  },\n  market: {\n    currentPrice: $workflow.staticData.currentPrice || 'N/A',\n    openingPrice: $workflow.staticData.openingPrice || 'N/A',\n    percentChange: $workflow.staticData.percentChange || 0,\n    lastPriceDate: $workflow.staticData.lastPriceDate || 'N/A'\n  },\n  trading: {\n    lastTradeDate: $workflow.staticData.lastTradeDate || 'None',\n    canTradeToday: $workflow.staticData.lastTradeDate !== new Date().toDateString()\n  },\n  statistics: {\n    totalTrades: ($workflow.staticData.tradeHistory || []).length,\n    recentTrades: ($workflow.staticData.tradeHistory || []).slice(-5),\n    validationFailures: ($workflow.staticData.validationFailures || []).length,\n    recentValidationFailures: ($workflow.staticData.validationFailures || []).slice(-5)\n  },\n  alerts: {\n    errorCount: ($workflow.staticData.errorLog || []).length,\n    lastError: ($workflow.staticData.errorLog || []).slice(-1)[0] || null\n  }\n};\n\nreturn [{ json: systemStatus }];"
+      },
+      "id": "4709bc59-bf7b-4594-95bf-dfc38ff0f300",
+      "name": "Status Aggregator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2960,
+        1376
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "768e7191-bc2e-4f1a-804e-eb5340668336",
+      "name": "Return Status",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -2736,
+        1376
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Error handler for trade execution\nif (!$workflow.staticData) {\n  $workflow.staticData = {};\n}\n\nconst error = $input.item.json.error || $input.item.json;\nconst context = {\n  node: $node,\n  workflow: $workflow,\n  timestamp: new Date().toISOString()\n};\n\n// Categorize error types\nlet errorType = 'unknown';\nlet recovery = 'none';\nlet severity = 'medium';\n\nconst errorMessage = (error.message || error.toString()).toLowerCase();\n\nif (errorMessage.includes('insufficient buying power') || errorMessage.includes('insufficient funds')) {\n  errorType = 'insufficient_funds';\n  recovery = 'halt_trading';\n  severity = 'high';\n} else if (errorMessage.includes('rate limit') || errorMessage.includes('too many requests')) {\n  errorType = 'rate_limit';\n  recovery = 'exponential_backoff';\n  severity = 'medium';\n} else if (errorMessage.includes('market closed') || errorMessage.includes('not tradable')) {\n  errorType = 'market_hours';\n  recovery = 'wait_for_open';\n  severity = 'low';\n} else if (errorMessage.includes('connection') || errorMessage.includes('timeout')) {\n  errorType = 'network';\n  recovery = 'retry';\n  severity = 'medium';\n} else if (errorMessage.includes('strike') || errorMessage.includes('option')) {\n  errorType = 'options_data';\n  recovery = 'retry_with_delay';\n  severity = 'medium';\n}\n\n// Create error log entry\nconst logEntry = {\n  timestamp: new Date().toISOString(),\n  errorType,\n  severity,\n  message: error.message || error.toString(),\n  context: JSON.stringify(context, null, 2),\n  recovery,\n  stackTrace: error.stack || 'No stack trace available'\n};\n\n// Store in error log\nif (!$workflow.staticData.errorLog) {\n  $workflow.staticData.errorLog = [];\n}\n$workflow.staticData.errorLog.push(logEntry);\n\n// Keep only last 100 errors\nif ($workflow.staticData.errorLog.length > 100) {\n  $workflow.staticData.errorLog.splice(0, $workflow.staticData.errorLog.length - 100);\n}\n\n// Implement circuit breaker\nconst recentErrors = $workflow.staticData.errorLog.filter(e => \n  new Date(e.timestamp) > new Date(Date.now() - 60 * 60 * 1000) // Last hour\n);\n\nif (recentErrors.length >= 5) {\n  $workflow.staticData.circuitBreakerTripped = true;\n  $workflow.staticData.circuitBreakerTime = new Date().toISOString();\n}\n\nreturn [{\n  json: {\n    errorHandled: true,\n    errorType,\n    severity,\n    recovery,\n    circuitBreakerStatus: $workflow.staticData.circuitBreakerTripped || false,\n    recentErrorCount: recentErrors.length,\n    logEntry\n  }\n}];"
+      },
+      "id": "a581805b-f0c9-4c10-bf53-3a8103cf543e",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -960,
+        -48
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-21T20:43:29.000Z",
+  "versionId": "c8b911f7-2560-4447-b51f-04357bf407d3"
+}
