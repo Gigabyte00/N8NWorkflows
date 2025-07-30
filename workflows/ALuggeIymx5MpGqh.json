@@ -1,0 +1,83 @@
+{
+  "active": false,
+  "connections": {
+    "product created": {
+      "main": [
+        [
+          {
+            "node": "Twitter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T03:22:24.508Z",
+  "id": "ALuggeIymx5MpGqh",
+  "isArchived": false,
+  "meta": {
+    "templateId": "1205"
+  },
+  "name": "Promote new Shopify products on Twitter and Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "text": "=Hey there, my design is now on a new product ✨\nVisit my {{$json[\"vendor\"]}} shop to get this cool{{$json[\"title\"]}} (and check out more {{$json[\"product_type\"]}}) 🛍️",
+        "additionalFields": {}
+      },
+      "name": "Twitter",
+      "type": "n8n-nodes-base.twitter",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "15386bb5-427f-456e-b6b4-231336bb4e38"
+    },
+    {
+      "parameters": {
+        "chatId": "123456",
+        "text": "=Hey there, my design is now on a new product!\nVisit my {{$json[\"vendor\"]}} shop to get this cool{{$json[\"title\"]}} (and check out more {{$json[\"product_type\"]}})",
+        "additionalFields": {}
+      },
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        368,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "9ec4e3d3-b32f-4d04-8fc3-cebff1f84b60",
+      "webhookId": "0eb49b30-471b-4e03-ad4b-48c26319e4f4"
+    },
+    {
+      "parameters": {
+        "topic": "products/create"
+      },
+      "name": "product created",
+      "type": "n8n-nodes-base.shopifyTrigger",
+      "position": [
+        192,
+        352
+      ],
+      "webhookId": "2a7e0e50-8f09-4a2b-bf54-a849a6ac4fe0",
+      "typeVersion": 1,
+      "id": "0fce35fb-d75e-403f-bb49-e6c6e1c58e7a"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T03:22:24.508Z",
+  "versionId": "8e87df28-20b3-41b7-a220-3a2230771763"
+}
