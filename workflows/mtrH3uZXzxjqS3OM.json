@@ -1,0 +1,1593 @@
+{
+  "active": false,
+  "connections": {
+    "Updates the application.": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describes the application.": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describes an application problem.": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lists the problems with your application.": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "<p> Lists the INFO, WARN, and ERROR events for per": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "<p>Add one or more tags (keys and values) to a spe": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adds a log pattern to a <code>LogPatternSet</code>": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adds an application that is created from a resourc": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adds an log pattern to a <code>LogPatternSet</code": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Creates a custom component by grouping similar sta": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describe a specific log pattern from a <code>LogPa": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describes a component and lists the resources that": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describes an anomaly or error with the application": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describes the anomalies or errors associated with ": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describes the monitoring configuration of the comp": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describes the recommended monitoring configuration": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lists the IDs of the applications that you are mon": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lists the auto-grouped, standalone, and custom com": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lists the log pattern sets in the specific applica": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lists the log patterns in the specific log <code>L": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove one or more tags (keys and values) from a s": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Removes the specified application from monitoring.": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Removes the specified log pattern from a <code>Log": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve a list of the tags (keys and values) that": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ungroups a custom component. When you ungroup cust": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Updates the custom component name and/or the list ": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Updates the monitoring configurations for the comp": {
+      "ai_tool": [
+        [
+          {
+            "node": "Amazon CloudWatch Application Insights MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T10:57:36.559Z",
+  "id": "mtrH3uZXzxjqS3OM",
+  "isArchived": false,
+  "meta": {
+    "templateId": "5498"
+  },
+  "name": "Expose Amazon CloudWatch Application Insights API with 27 Operations for AI Tools",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "### ⚙️ Setup Instructions\n\n1. **Import Workflow**: \nLoad this workflow into your n8n instance\n\n2. **Configure Authentication**: \nSet up apiKey credentials\n   - Type: API Key in header\n   - Key name: Authorization\n\n3. **Activate Workflow**:\nEnable the workflow to start the MCP server\n\n4. **Get MCP URL**: \nCopy the webhook URL from the MCP trigger\n\n5. **Connect AI Agent**:\nUse the MCP URL in your AI agent configuration\n\n\n### 💡 Usage Notes\n• Parameters are auto-populated by AI using $fromAI() expressions\n• With 27 API endpoints available as tools\n• Responses maintain original API structure\n\n\n### 🛠️ Customization\n• Add data transformation nodes if needed\n• Implement custom error handling\n• Add logging or monitoring nodes\n\n• Modify parameter defaults in any HTTP request node as needed\n\n### 💬 Need Help?\nPing me on [discord](https://discord.me/cfomodz) for integration guidance and custom automations. Check the [n8n documentation](https://docs.n8n.io/integrations/builtin/cluster-nodes/sub-nodes/n8n-nodes-langchain.toolmcp/) for more information.",
+        "height": 1080,
+        "color": 4
+      },
+      "id": "21f34f1c-3755-4dda-a52e-1cc8830c3c59",
+      "name": "Setup Instructions",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 🛠️ Amazon CloudWatch Application Insights MCP Server ✅ 27 operations\n\n### About\nAmazon CloudWatch Application Insights is a service that helps you detect common problems with your applications. It enables you to pinpoint the source of issues in your applications (built with technologies such as Microsoft IIS, .NET, and Microsoft SQL Server), by providing key insights into detected problems. After you onboard your application, CloudWatch Application Insights identifies, recommends, and sets up metrics and logs. It continuously analyzes and correlates your metrics and logs for unusual behavior to surface actionable problems with your application. For example, if your application is slow and unresponsive and leading to HTTP 500 errors in your Application Load Balancer (ALB), Application Insights informs you that a memory pressure problem with your SQL Server database is occurring. It bases this analysis on impactful metrics and log errors.\n\n### 🔧 How it Works\n\nThis workflow converts the Amazon CloudWatch Application Insights API into an MCP-compatible interface for AI agents.\n\n• **MCP Trigger**: Serves as your server endpoint for AI agent requests\n• **HTTP Request Nodes**: Handle API calls to http://applicationinsights.{region}.amazonaws.com\n• **AI Expressions**: Automatically populate parameters via `$fromAI()` placeholders\n• **Native Integration**: Returns responses directly to the AI agent\n",
+        "height": 920,
+        "width": 320
+      },
+      "id": "4874bd67-0f9b-440e-a742-274aebb1cb00",
+      "name": "Workflow Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        656,
+        400
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "path": "amazon-cloudwatch-application-insights-mcp"
+      },
+      "id": "28e83cfd-48b6-46bf-afeb-96765003301c",
+      "name": "Amazon CloudWatch Application Insights MCP Server",
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "position": [
+        832,
+        272
+      ],
+      "webhookId": "fd94175b-1856-44af-8bcb-15e3765120dd",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Adds an application that is created from a resource group.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.CreateApplication",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "28441846-54bf-4c3a-a227-97ca2561fa16",
+      "name": "Adds an application that is created from a resourc",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1376,
+        304
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Create Application",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "87e8b644-77d1-475d-896a-b84b903935c0",
+      "name": "Grid Note 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1296,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Creates a custom component by grouping similar standalone instances to monitor.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.CreateComponent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "039bb079-d401-4d3a-b820-d146e0b08ae8",
+      "name": "Creates a custom component by grouping similar sta",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1648,
+        304
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Create Component",
+        "height": 220,
+        "color": 7
+      },
+      "id": "c79ea7ed-d101-4745-956d-5a300c22b22c",
+      "name": "Grid Note 2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1568,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Adds an log pattern to a <code>LogPatternSet</code>.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.CreateLogPattern",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c454356c-40b9-4ded-8054-1ced52bca8c0",
+      "name": "Adds an log pattern to a <code>LogPatternSet</code",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1936,
+        304
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Create Log Pattern",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "9dc7a36b-fe59-4d20-88b8-75991918cb07",
+      "name": "Grid Note 3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1856,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Removes the specified application from monitoring. Does not delete the application.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DeleteApplication",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d38e799e-fec9-4b78-b99f-c562bb1d7029",
+      "name": "Removes the specified application from monitoring.",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        2208,
+        304
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Delete Application",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "013142e2-91de-4a20-98b3-38e72873c180",
+      "name": "Grid Note 4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2128,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Ungroups a custom component. When you ungroup custom components, all applicable monitors that are set up for the component are removed and the instances revert to their standalone status.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DeleteComponent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c3ce5c0a-0985-495b-a677-a0e54126d0dc",
+      "name": "Ungroups a custom component. When you ungroup cust",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        2496,
+        304
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Delete Component",
+        "height": 220,
+        "color": 7
+      },
+      "id": "ccda5053-55c5-43df-bf27-6a1376aace6d",
+      "name": "Grid Note 5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2416,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Removes the specified log pattern from a <code>LogPatternSet</code>.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DeleteLogPattern",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9d7f4f9e-b315-4cc4-bca2-7b854590a0f1",
+      "name": "Removes the specified log pattern from a <code>Log",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1088,
+        528
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Delete Log Pattern",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "138a6734-e553-4e8a-a0b2-0f497258efd1",
+      "name": "Grid Note 6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        464
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Describes the application.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DescribeApplication",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b7c08261-86fb-4c3e-9b98-5c5c62ed1f0f",
+      "name": "Describes the application.",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1376,
+        528
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Describe Application",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "9b841e2a-e690-431a-887b-c0df5bf6df3a",
+      "name": "Grid Note 7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1296,
+        464
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Describes a component and lists the resources that are grouped together in a component.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DescribeComponent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "549c8025-31a0-433b-b1de-7276dffd7f08",
+      "name": "Describes a component and lists the resources that",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1648,
+        528
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Describe Component",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "d0792127-7b8f-4332-b0aa-4e1f62f38478",
+      "name": "Grid Note 8",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1568,
+        464
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Describes the monitoring configuration of the component.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DescribeComponentConfiguration",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f1701144-73f4-4984-bd85-d4bf38a6bc2b",
+      "name": "Describes the monitoring configuration of the comp",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1936,
+        528
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Describe Component Configuration",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "a683cdbd-bc04-488f-8b45-f1f0e8ef12ed",
+      "name": "Grid Note 9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1856,
+        464
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Describes the recommended monitoring configuration of the component.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DescribeComponentConfigurationRecommendation",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0e96d18a-d911-413c-be7f-ab043c739416",
+      "name": "Describes the recommended monitoring configuration",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        2208,
+        528
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Describe Component Configuration Recommendation",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "9869b2e5-9c5e-410c-b280-3ef985e17d64",
+      "name": "Grid Note 10",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2128,
+        464
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Describe a specific log pattern from a <code>LogPatternSet</code>.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DescribeLogPattern",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1b645df3-0f02-4f69-b8d0-96917cebe93a",
+      "name": "Describe a specific log pattern from a <code>LogPa",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        2496,
+        528
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Describe Log Pattern",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "df0cbf8c-4a53-4c17-9e2a-a52ba7be002a",
+      "name": "Grid Note 11",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2416,
+        464
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Describes an anomaly or error with the application.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DescribeObservation",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d0b927e7-8bb3-43aa-bec8-37aeb8571a1d",
+      "name": "Describes an anomaly or error with the application",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1088,
+        752
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Describe Observation",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "07b0d784-10fd-405f-9da4-673f4c8fd3bd",
+      "name": "Grid Note 12",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        688
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Describes an application problem.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DescribeProblem",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "88f7d14b-7ec3-4fdc-a0e9-ac58b611f521",
+      "name": "Describes an application problem.",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1376,
+        752
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Describe Problem",
+        "height": 220,
+        "color": 7
+      },
+      "id": "3e7abd03-a7d9-4925-aa68-119af4e04463",
+      "name": "Grid Note 13",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1296,
+        688
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Describes the anomalies or errors associated with the problem.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.DescribeProblemObservations",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c5eb6076-751d-4c19-89f4-c9a9d7a0b024",
+      "name": "Describes the anomalies or errors associated with ",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1648,
+        752
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Describe Problem Observations",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "18e1d50d-483d-4db4-9d68-3e6cd7896e83",
+      "name": "Grid Note 14",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1568,
+        688
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Lists the IDs of the applications that you are monitoring. \n\nParameters:\n- Query parameters:\n  • MaxResults (optional) - Pagination limit\n  • NextToken (optional) - Pagination token\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.ListApplications",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "MaxResults",
+              "value": "={{ $fromAI('MaxResults', 'Pagination limit', 'string') }}"
+            },
+            {
+              "name": "NextToken",
+              "value": "={{ $fromAI('NextToken', 'Pagination token', 'string') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dda98ea5-6254-48c5-8298-b668325c3442",
+      "name": "Lists the IDs of the applications that you are mon",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1936,
+        752
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## List Applications",
+        "height": 220,
+        "color": 7
+      },
+      "id": "10dad78a-0db4-48cd-ae1f-dba4c26de051",
+      "name": "Grid Note 15",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1856,
+        688
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Lists the auto-grouped, standalone, and custom components of the application.\n\nParameters:\n- Query parameters:\n  • MaxResults (optional) - Pagination limit\n  • NextToken (optional) - Pagination token\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.ListComponents",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "MaxResults",
+              "value": "={{ $fromAI('MaxResults', 'Pagination limit', 'string') }}"
+            },
+            {
+              "name": "NextToken",
+              "value": "={{ $fromAI('NextToken', 'Pagination token', 'string') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2cc9740f-6c24-4e60-b52c-f4f1b70837f4",
+      "name": "Lists the auto-grouped, standalone, and custom com",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        2208,
+        752
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## List Components",
+        "height": 220,
+        "color": 7
+      },
+      "id": "e1486666-eebf-4485-9dbf-5da506652ca1",
+      "name": "Grid Note 16",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2128,
+        688
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "<p> Lists the INFO, WARN, and ERROR events for periodic configuration updates performed by Application Insights. Examples of events represented are: </p> <ul> <li> <p>INFO: creating a new alarm or updating an alarm threshold.</p> </li> <li> <p>WARN: alarm not created due to insufficient data points used to predict thresholds.</p> </li> <li> <p>ERROR: alarm not created due to permission errors or exceeding quotas. </p> </li> </ul>\n\nParameters:\n- Query parameters:\n  • MaxResults (optional) - Pagination limit\n  • NextToken (optional) - Pagination token\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.ListConfigurationHistory",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "MaxResults",
+              "value": "={{ $fromAI('MaxResults', 'Pagination limit', 'string') }}"
+            },
+            {
+              "name": "NextToken",
+              "value": "={{ $fromAI('NextToken', 'Pagination token', 'string') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "514f9f47-6d16-4a82-8636-a953b2886a89",
+      "name": "<p> Lists the INFO, WARN, and ERROR events for per",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        2496,
+        752
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## List Configuration History",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "b5248965-6c4d-4ac4-9b36-93670038ccec",
+      "name": "Grid Note 17",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2416,
+        688
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Lists the log pattern sets in the specific application.\n\nParameters:\n- Query parameters:\n  • MaxResults (optional) - Pagination limit\n  • NextToken (optional) - Pagination token\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.ListLogPatternSets",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "MaxResults",
+              "value": "={{ $fromAI('MaxResults', 'Pagination limit', 'string') }}"
+            },
+            {
+              "name": "NextToken",
+              "value": "={{ $fromAI('NextToken', 'Pagination token', 'string') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "37d61390-61d8-4c3f-897e-5114435b43ad",
+      "name": "Lists the log pattern sets in the specific applica",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1088,
+        960
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## List Log Pattern Sets",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "ba562742-0190-4b5f-838d-1ac53565809b",
+      "name": "Grid Note 18",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        912
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Lists the log patterns in the specific log <code>LogPatternSet</code>.\n\nParameters:\n- Query parameters:\n  • MaxResults (optional) - Pagination limit\n  • NextToken (optional) - Pagination token\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.ListLogPatterns",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "MaxResults",
+              "value": "={{ $fromAI('MaxResults', 'Pagination limit', 'string') }}"
+            },
+            {
+              "name": "NextToken",
+              "value": "={{ $fromAI('NextToken', 'Pagination token', 'string') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2b77631e-cc33-4b37-b3a5-30344b6d1511",
+      "name": "Lists the log patterns in the specific log <code>L",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1376,
+        960
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## List Log Patterns",
+        "height": 220,
+        "color": 7
+      },
+      "id": "e1179b2c-7012-4578-9105-d59f0c5d1b7a",
+      "name": "Grid Note 19",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1296,
+        912
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Lists the problems with your application.\n\nParameters:\n- Query parameters:\n  • MaxResults (optional) - Pagination limit\n  • NextToken (optional) - Pagination token\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.ListProblems",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "MaxResults",
+              "value": "={{ $fromAI('MaxResults', 'Pagination limit', 'string') }}"
+            },
+            {
+              "name": "NextToken",
+              "value": "={{ $fromAI('NextToken', 'Pagination token', 'string') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "06414627-79f4-4bc3-a895-07f862beb3a0",
+      "name": "Lists the problems with your application.",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1648,
+        960
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## List Problems",
+        "height": 220,
+        "color": 7
+      },
+      "id": "dc25f0ca-d9c4-4316-af85-b60a95b1868d",
+      "name": "Grid Note 20",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1568,
+        912
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Retrieve a list of the tags (keys and values) that are associated with a specified application. A <i>tag</i> is a label that you optionally define and associate with an application. Each tag consists of a required <i>tag key</i> and an optional associated <i>tag value</i>. A tag key is a general label that acts as a category for more specific tag values. A tag value acts as a descriptor within a tag key.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.ListTagsForResource",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c86de5d3-c9d4-437a-9f69-237aa65c6bb9",
+      "name": "Retrieve a list of the tags (keys and values) that",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1936,
+        960
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## List Tags For Resource",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "7ff1878d-7cbe-46e3-9390-5d6c35a306db",
+      "name": "Grid Note 21",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1856,
+        912
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "<p>Add one or more tags (keys and values) to a specified application. A <i>tag</i> is a label that you optionally define and associate with an application. Tags can help you categorize and manage application in different ways, such as by purpose, owner, environment, or other criteria. </p> <p>Each tag consists of a required <i>tag key</i> and an associated <i>tag value</i>, both of which you define. A tag key is a general label that acts as a category for more specific tag values. A tag value acts as a descriptor within a tag key.</p>\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.TagResource",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "db363d05-e6fc-4482-92cc-b1d3b771d672",
+      "name": "<p>Add one or more tags (keys and values) to a spe",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        2208,
+        960
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Tag Resource",
+        "height": 220,
+        "color": 7
+      },
+      "id": "9c60cd0e-437e-4db2-ad82-2f1d9a921305",
+      "name": "Grid Note 22",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2128,
+        912
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Remove one or more tags (keys and values) from a specified application.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.UntagResource",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a5781953-9861-4e00-acbd-d325bd4490a6",
+      "name": "Remove one or more tags (keys and values) from a s",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        2496,
+        960
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Un Tag Resource",
+        "height": 220,
+        "color": 7
+      },
+      "id": "22bca4f5-1e3f-4dbc-9cd6-34a206ed316b",
+      "name": "Grid Note 23",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2416,
+        912
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Updates the application.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.UpdateApplication",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c415e1e9-03cc-4ef0-8ec5-614bce5f3d8c",
+      "name": "Updates the application.",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1088,
+        1184
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Update Application",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "2f99c67b-db01-444b-ab42-d7c49469c9fd",
+      "name": "Grid Note 24",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Updates the custom component name and/or the list of resources that make up the component.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.UpdateComponent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ec99b141-82ab-4ab5-a8ce-e10b4d0c40c3",
+      "name": "Updates the custom component name and/or the list ",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1376,
+        1184
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Update Component",
+        "height": 220,
+        "color": 7
+      },
+      "id": "6b87e065-ebb4-4116-8699-22f9c0d9b013",
+      "name": "Grid Note 25",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1296,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Updates the monitoring configurations for the component. The configuration input parameter is an escaped JSON of the configuration and should match the schema of what is returned by <code>DescribeComponentConfigurationRecommendation</code>. \n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.UpdateComponentConfiguration",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e8d29ea6-d207-4c9b-bf82-012b990a9b24",
+      "name": "Updates the monitoring configurations for the comp",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1648,
+        1184
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Update Component Configuration",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "cde68392-ada3-405f-b031-0dbe0c5a1482",
+      "name": "Grid Note 26",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1568,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "Adds a log pattern to a <code>LogPatternSet</code>.\n\nParameters:\n- Header parameters:\n  • X-Amz-Target (required)",
+        "method": "POST",
+        "url": "=http://applicationinsights.{region}.amazonaws.com/#X-Amz-Target=EC2WindowsBarleyService.UpdateLogPattern",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Amz-Target",
+              "value": "={{ $fromAI('X-Amz-Target', 'X Amz Target', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2b7d769-7300-407f-8e08-988c90d7ea3d",
+      "name": "Adds a log pattern to a <code>LogPatternSet</code>",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "position": [
+        1936,
+        1184
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Update Log Pattern",
+        "height": 220,
+        "width": 260,
+        "color": 7
+      },
+      "id": "cf36ef84-4244-4883-b37f-acffe953f7d6",
+      "name": "Grid Note 27",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1856,
+        1120
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T10:57:36.559Z",
+  "versionId": "2eb5fb8c-ba3e-4366-8b1f-931c6158231c"
+}
