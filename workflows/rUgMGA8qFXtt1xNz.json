@@ -1,0 +1,90 @@
+{
+  "active": false,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "NetSuite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NetSuite": {
+      "main": [
+        []
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "NetSuite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-18T23:52:57.087Z",
+  "id": "rUgMGA8qFXtt1xNz",
+  "isArchived": false,
+  "meta": {
+    "templateId": "3002"
+  },
+  "name": "Dynamically Run SuiteQL Queries in NetSuite via HTTP Webhook in n8n",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f7f90fb4-e29f-4bbf-a99d-ee2fde45cd06",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        368,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "9fcc1ce7-e9bf-4592-8bcd-7c77272a9c59",
+      "name": "NetSuite",
+      "type": "n8n-nodes-netsuite.netsuite",
+      "position": [
+        720,
+        352
+      ],
+      "typeVersion": 1,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "path": "249328cc-587a-4269-b266-96fe60cfaeb9",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "id": "1d615309-2cb0-4383-9698-2f80da0d4bf5",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        368,
+        240
+      ],
+      "webhookId": "249328cc-587a-4269-b266-96fe60cfaeb9",
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-18T23:52:57.087Z",
+  "versionId": "cd999077-7e32-4889-80c4-9622e7cd791d"
+}
