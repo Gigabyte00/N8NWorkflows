@@ -1,0 +1,552 @@
+{
+  "active": false,
+  "connections": {
+    "Market Hours Schedule": {
+      "main": [
+        [
+          {
+            "node": "Fetch SPY Price",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch SPY Price": {
+      "main": [
+        [
+          {
+            "node": "If Greater than 2%",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Strike Selection": {
+      "main": [
+        [
+          {
+            "node": "Place Credit Spread Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Place Credit Spread Order": {
+      "main": [
+        [
+          {
+            "node": "Trade Logger",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3:45 PM Close Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Current Positions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Current Positions": {
+      "main": [
+        [
+          {
+            "node": "Position Closer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Position Closer": {
+      "main": [
+        [
+          {
+            "node": "Submit Close Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Status Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status Aggregator": {
+      "main": [
+        [
+          {
+            "node": "Return Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Options Chain1": {
+      "main": [
+        [
+          {
+            "node": "Strike Selection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Greater than 2%": {
+      "main": [
+        [
+          {
+            "node": "Get Options Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If Less than 2%",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Less than 2%": {
+      "main": [
+        [
+          {
+            "node": "Get Options Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2025-07-21T18:02:17.308Z",
+  "id": "oVA3kpkZpJsskc3o",
+  "isArchived": true,
+  "meta": null,
+  "name": "Alpaca-SPY1.2%",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "d699b8f7-e080-4ff3-b5b5-46011ce1362f",
+      "name": "Market Hours Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        544,
+        -1040
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://data.alpaca.markets/v2/stocks/snapshots?symbols=spy&feed=iex",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "APCA-API-KEY-ID",
+              "value": "PKX95T5PNX60MXGG8CWF"
+            },
+            {
+              "name": "APCA-API-SECRET-KEY",
+              "value": "0bJR9jgwFV7eBJ4in3NeXLQDT09Bl2mfEKx3uKEy"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 5000
+        }
+      },
+      "id": "a2a208bb-176b-4c18-87c8-e0b06ba5a805",
+      "name": "Fetch SPY Price",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        768,
+        -1040
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data\nconst optionsChain = $input.item.json.option_contracts;\nconst movementData = $node[\"Movement Calculator\"].json;\nconst currentPrice = movementData.currentPrice;\nconst signal = movementData.signal;\n\nif (!optionsChain || optionsChain.length === 0) {\n  throw new Error('No options chain data available');\n}\n\n// Determine ATM strike (round to nearest dollar)\nconst atmStrike = Math.round(currentPrice);\n\nlet shortStrike, longStrike, spreadType;\n\nif (signal === 'bearish_credit_spread') {\n  // Sell ATM call, buy 1 strike higher\n  const calls = optionsChain.filter(opt => \n    opt.type === 'call' && \n    opt.tradable === true &&\n    parseFloat(opt.bid) > 0 &&\n    parseFloat(opt.ask) > 0\n  ).sort((a, b) => parseFloat(a.strike_price) - parseFloat(b.strike_price));\n  \n  shortStrike = calls.find(opt => parseFloat(opt.strike_price) >= atmStrike);\n  if (shortStrike) {\n    longStrike = calls.find(opt => \n      parseFloat(opt.strike_price) === parseFloat(shortStrike.strike_price) + 1\n    );\n  }\n  spreadType = 'call_credit_spread';\n  \n} else if (signal === 'bullish_credit_spread') {\n  // Sell ATM put, buy 1 strike lower\n  const puts = optionsChain.filter(opt => \n    opt.type === 'put' && \n    opt.tradable === true &&\n    parseFloat(opt.bid) > 0 &&\n    parseFloat(opt.ask) > 0\n  ).sort((a, b) => parseFloat(b.strike_price) - parseFloat(a.strike_price));\n  \n  shortStrike = puts.find(opt => parseFloat(opt.strike_price) <= atmStrike);\n  if (shortStrike) {\n    longStrike = puts.find(opt => \n      parseFloat(opt.strike_price) === parseFloat(shortStrike.strike_price) - 1\n    );\n  }\n  spreadType = 'put_credit_spread';\n}\n\nif (!shortStrike || !longStrike) {\n  throw new Error(`Unable to find suitable strikes for ${signal}. ATM: ${atmStrike}`);\n}\n\n// Calculate optimal credit limit price\nconst shortMidPrice = (parseFloat(shortStrike.bid) + parseFloat(shortStrike.ask)) / 2;\nconst longMidPrice = (parseFloat(longStrike.bid) + parseFloat(longStrike.ask)) / 2;\nconst netCredit = shortMidPrice - longMidPrice;\n\n// Set limit price to capture 90% of theoretical credit with minimum of $0.10\nconst limitPrice = Math.max(0.10, parseFloat((netCredit * 0.90).toFixed(2)));\n\nreturn [{\n  json: {\n    signal,\n    spreadType,\n    shortStrike: {\n      symbol: shortStrike.symbol,\n      strike: shortStrike.strike_price,\n      bid: shortStrike.bid,\n      ask: shortStrike.ask,\n      midPrice: shortMidPrice.toFixed(2)\n    },\n    longStrike: {\n      symbol: longStrike.symbol,\n      strike: longStrike.strike_price,\n      bid: longStrike.bid,\n      ask: longStrike.ask,\n      midPrice: longMidPrice.toFixed(2)\n    },\n    limitPrice,\n    netCredit: netCredit.toFixed(2),\n    atmStrike,\n    currentPrice,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "543f8483-9ffa-4b78-a9ea-ea5747e74172",
+      "name": "Strike Selection",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1504,
+        -1056
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://paper-api.alpaca.markets/v2/orders",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "APCA-API-KEY-ID",
+              "value": "REPLACE_WITH_YOUR_API_KEY_ID"
+            },
+            {
+              "name": "APCA-API-SECRET-KEY",
+              "value": "REPLACE_WITH_YOUR_SECRET_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "5a1e3ebf-c421-4b0f-b18e-ab9afb3a1e8a",
+      "name": "Place Credit Spread Order",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1744,
+        -1056
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process order response and update workflow state\nconst orderResponse = $input.item.json;\nconst strikeData = $node[\"Strike Selection\"].json;\nconst movementData = $node[\"Movement Calculator\"].json;\n\n// Mark that we've traded today\nconst today = new Date().toDateString();\n$workflow.staticData.lastTradeDate = today;\n\n// Store trade details\nconst tradeRecord = {\n  orderId: orderResponse.id,\n  symbol: 'SPY',\n  spreadType: strikeData.spreadType,\n  shortStrike: strikeData.shortStrike,\n  longStrike: strikeData.longStrike,\n  limitPrice: strikeData.limitPrice,\n  triggerPrice: movementData.currentPrice,\n  triggerMovement: movementData.percentChange,\n  timestamp: new Date().toISOString(),\n  status: orderResponse.status\n};\n\n// Add to trade history\nconst tradeHistory = $workflow.staticData.tradeHistory || [];\ntradeHistory.push(tradeRecord);\n$workflow.staticData.tradeHistory = tradeHistory;\n\nreturn [{\n  json: {\n    success: true,\n    orderId: orderResponse.id,\n    orderStatus: orderResponse.status,\n    tradeRecord,\n    message: `${strikeData.spreadType} order placed successfully for ${strikeData.limitPrice} credit`\n  }\n}];"
+      },
+      "id": "74e43711-d027-40f1-8be7-9af4a81c7651",
+      "name": "Trade Logger",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        -1056
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression"
+            }
+          ]
+        }
+      },
+      "id": "2483af9d-15a3-4aab-ad71-a3129ba62149",
+      "name": "3:45 PM Close Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://paper-api.alpaca.markets/v2/positions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "APCA-API-KEY-ID",
+              "value": "={{$credentials.alpaca.apiKeyId}}"
+            },
+            {
+              "name": "APCA-API-SECRET-KEY",
+              "value": "={{$credentials.alpaca.apiSecretKey}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9f6ae5b7-92ca-46a6-8171-a463c43ace85",
+      "name": "Get Current Positions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        784,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter for today's SPY options positions\nconst positions = $input.item.json;\nconst today = new Date();\nconst todayStr = today.toISOString().substring(0, 10).replace(/-/g, '');\n\n// Filter SPY options expiring today\nconst todayOptions = positions.filter(pos => {\n  if (pos.asset_class !== 'us_option' || !pos.symbol.includes('SPY')) {\n    return false;\n  }\n  \n  // Extract expiration date from option symbol (YYMMDD format)\n  const symbolMatch = pos.symbol.match(/SPY(\\d{6})[CP]/);  \n  if (!symbolMatch) return false;\n  \n  const expirationStr = symbolMatch[1];\n  // Convert YYMMDD to YYYYMMDD\n  const fullYear = '20' + expirationStr.substring(0, 2);\n  const fullDate = fullYear + expirationStr.substring(2);\n  \n  return fullDate === todayStr;\n});\n\nif (todayOptions.length === 0) {\n  return [{\n    json: {\n      action: 'no_positions_to_close',\n      message: 'No SPY options positions expiring today'\n    }\n  }];\n}\n\n// Create closing orders for each position\nconst closingOrders = todayOptions.map(position => {\n  const qty = Math.abs(parseFloat(position.qty));\n  const side = position.side === 'long' ? 'sell' : 'buy';\n  const positionIntent = side === 'sell' ? 'sell_to_close' : 'buy_to_close';\n  \n  return {\n    symbol: position.symbol,\n    qty: qty.toString(),\n    side: side,\n    type: 'market',\n    time_in_force: 'day',\n    position_intent: positionIntent\n  };\n});\n\nreturn closingOrders.map(order => ({ json: order }));"
+      },
+      "id": "4c506bde-9a40-4216-8a6b-925a23ada213",
+      "name": "Position Closer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://paper-api.alpaca.markets/v2/orders",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "APCA-API-KEY-ID",
+              "value": "={{$credentials.alpaca.apiKeyId}}"
+            },
+            {
+              "name": "APCA-API-SECRET-KEY",
+              "value": "={{$credentials.alpaca.apiSecretKey}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "1db51503-3ac2-4d9e-a563-a928ac6cf0d2",
+      "name": "Submit Close Orders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1232,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "path": "spy-trading-status",
+        "options": {}
+      },
+      "id": "0a75273b-5885-4cf5-bea3-63851b87815a",
+      "name": "Status Dashboard",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        448
+      ],
+      "webhookId": "407f6e6b-4ad7-4e35-8f1a-1826bb729c9c"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate system status and trading statistics\n// Initialize static data if it doesn't exist\nif (!$workflow.staticData) {\n  $workflow.staticData = {};\n}\n\nconst systemStatus = {\n  timestamp: new Date().toISOString(),\n  system: {\n    status: 'active',\n    lastUpdate: new Date().toISOString()\n  },\n  market: {\n    currentPrice: $workflow.staticData.currentPrice || 'N/A',\n    openingPrice: $workflow.staticData.openingPrice || 'N/A',\n    percentChange: $workflow.staticData.percentChange || 0,\n    lastPriceDate: $workflow.staticData.lastPriceDate || 'N/A'\n  },\n  trading: {\n    lastTradeDate: $workflow.staticData.lastTradeDate || 'None',\n    canTradeToday: $workflow.staticData.lastTradeDate !== new Date().toDateString()\n  },\n  statistics: {\n    totalTrades: ($workflow.staticData.tradeHistory || []).length,\n    recentTrades: ($workflow.staticData.tradeHistory || []).slice(-5)\n  },\n  alerts: {\n    errorCount: ($workflow.staticData.errorLog || []).length,\n    lastError: ($workflow.staticData.errorLog || []).slice(-1)[0] || null\n  }\n};\n\nreturn [{ json: systemStatus }];"
+      },
+      "id": "d261c2eb-8938-45d8-a8fb-4a557ac51a11",
+      "name": "Status Aggregator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "cba55d35-e8d8-4573-9146-e91bc23d36ce",
+      "name": "Return Status",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Error handler for trade execution\n// Initialize static data if it doesn't exist\nif (!$workflow.staticData) {\n  $workflow.staticData = {};\n}\n\nconst error = $input.item.json.error || $input.item.json;\nconst context = {\n  node: $node,\n  workflow: $workflow,\n  timestamp: new Date().toISOString()\n};\n\n// Categorize error types\nlet errorType = 'unknown';\nlet recovery = 'none';\nlet severity = 'medium';\n\nconst errorMessage = (error.message || error.toString()).toLowerCase();\n\nif (errorMessage.includes('insufficient buying power') || errorMessage.includes('insufficient funds')) {\n  errorType = 'insufficient_funds';\n  recovery = 'halt_trading';\n  severity = 'high';\n} else if (errorMessage.includes('rate limit') || errorMessage.includes('too many requests')) {\n  errorType = 'rate_limit';\n  recovery = 'exponential_backoff';\n  severity = 'medium';\n} else if (errorMessage.includes('market closed') || errorMessage.includes('not tradable')) {\n  errorType = 'market_hours';\n  recovery = 'wait_for_open';\n  severity = 'low';\n} else if (errorMessage.includes('connection') || errorMessage.includes('timeout')) {\n  errorType = 'network';\n  recovery = 'retry';\n  severity = 'medium';\n} else if (errorMessage.includes('strike') || errorMessage.includes('option')) {\n  errorType = 'options_data';\n  recovery = 'retry_with_delay';\n  severity = 'medium';\n}\n\n// Create error log entry\nconst logEntry = {\n  timestamp: new Date().toISOString(),\n  errorType,\n  severity,\n  message: error.message || error.toString(),\n  context: JSON.stringify(context, null, 2),\n  recovery,\n  stackTrace: error.stack || 'No stack trace available'\n};\n\n// Store in error log\nif (!$workflow.staticData.errorLog) {\n  $workflow.staticData.errorLog = [];\n}\n$workflow.staticData.errorLog.push(logEntry);\n\n// Keep only last 100 errors\nif ($workflow.staticData.errorLog.length > 100) {\n  $workflow.staticData.errorLog.splice(0, $workflow.staticData.errorLog.length - 100);\n}\n\n// Implement circuit breaker\nconst recentErrors = $workflow.staticData.errorLog.filter(e => \n  new Date(e.timestamp) > new Date(Date.now() - 60 * 60 * 1000) // Last hour\n);\n\nif (recentErrors.length >= 5) {\n  $workflow.staticData.circuitBreakerTripped = true;\n  $workflow.staticData.circuitBreakerTime = new Date().toISOString();\n}\n\nreturn [{\n  json: {\n    errorHandled: true,\n    errorType,\n    severity,\n    recovery,\n    circuitBreakerStatus: $workflow.staticData.circuitBreakerTripped || false,\n    recentErrorCount: recentErrors.length,\n    logEntry\n  }\n}];"
+      },
+      "id": "a6143142-b212-444b-a3ce-1c5afb228a21",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        -784
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://data.alpaca.markets/v1beta1/options/snapshots/SPY?feed=indicative&limit=100",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "APCA-API-KEY-ID",
+              "value": "PKX95T5PNX60MXGG8CWF"
+            },
+            {
+              "name": "APCA-API-SECRET-KEY",
+              "value": "0bJR9jgwFV7eBJ4in3NeXLQDT09Bl2mfEKx3uKEy"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "978a5156-50ef-49d7-835c-9ecc96205d90",
+      "name": "Get Options Chain1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1280,
+        -1056
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "12a2e4a0-f8dc-4805-9c39-3ea51bd06724",
+              "leftValue": "={{ $json.SPY.latestTrade.p }}",
+              "rightValue": "={{ $json.SPY.dailyBar.o*1.02}}",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "94922580-3793-4170-b2a6-f34790e3bfff",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1024,
+        -1040
+      ],
+      "id": "2bf25842-39b1-4a27-a1aa-29c3dc91b467",
+      "name": "If Greater than 2%"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "42f3a1f5-44b0-4fb8-bf91-a4b2377be547",
+              "leftValue": "={{ $json.SPY.latestTrade.p }}",
+              "rightValue": "={{ $json.SPY.dailyBar.o*.98}}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1024,
+        -800
+      ],
+      "id": "f8e6b15b-6d06-40c0-8fbe-38826f08a48e",
+      "name": "If Less than 2%"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -592
+      ],
+      "id": "6e1e83a4-6552-4d3d-af86-c57f62806c5e",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-21T20:43:13.000Z",
+  "versionId": "e4aa4bf7-45b6-47fb-9698-b2434724313c"
+}
