@@ -1,0 +1,299 @@
+{
+  "active": false,
+  "connections": {
+    "New Lead Captured": {
+      "main": [
+        [
+          {
+            "node": "Initiate Voice Call (VAPI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Receive Lead Details from VAPI": {
+      "main": [
+        [
+          {
+            "node": "Save Qualified Lead to CRM Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Qualified Lead to CRM Sheet": {
+      "main": [
+        [
+          {
+            "node": "Send Call Data Acknowledgement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-27T10:33:09.294Z",
+  "id": "V56z7k3ruAgaqV2M",
+  "isArchived": false,
+  "meta": {
+    "templateId": "5404"
+  },
+  "name": "B2B lead qualification",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1DCq5a_I2KyD0Tt5Z_TqluZOM1sq6KI05PaxmVVI7J4o",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DCq5a_I2KyD0Tt5Z_TqluZOM1sq6KI05PaxmVVI7J4o/edit?usp=drivesdk",
+          "cachedResultName": "Outter calls list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": 1562885128,
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DCq5a_I2KyD0Tt5Z_TqluZOM1sq6KI05PaxmVVI7J4o/edit#gid=1562885128",
+          "cachedResultName": "phone_number"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "id": "b99be5b1-f4a6-4d0f-af0d-4d2464be11c1",
+      "name": "New Lead Captured",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "position": [
+        432,
+        352
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.vapi.ai/call",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "add_authorization_token_here"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"assistantId\": \"add_id_here\",\n  \"phoneNumberId\": \"add_phone_number_id_here\",\n  \"customers\": [\n    {\n      \"number\": \"add_vapi_agent_phonenumber_here\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "e6efc842-fbb5-4d0d-949f-0b08a2612255",
+      "name": "Initiate Voice Call (VAPI)",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        880,
+        352
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1DCq5a_I2KyD0Tt5Z_TqluZOM1sq6KI05PaxmVVI7J4o",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DCq5a_I2KyD0Tt5Z_TqluZOM1sq6KI05PaxmVVI7J4o/edit?usp=drivesdk",
+          "cachedResultName": "Outter calls list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DCq5a_I2KyD0Tt5Z_TqluZOM1sq6KI05PaxmVVI7J4o/edit#gid=0",
+          "cachedResultName": "Sheet1"
+        },
+        "columns": {
+          "value": {
+            "Name ": "={{ $json.body.message.toolCallList[0].function.arguments.name }}",
+            "Company name": "={{ $json.body.message.toolCallList[0].function.arguments.company_name }}",
+            "Company size": "={{ $json.body.message.toolCallList[0].function.arguments.company_size }}"
+          },
+          "schema": [
+            {
+              "id": "Name ",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Name ",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company name",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Company name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company size",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Company size",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "Name "
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "d8e5a345-a452-41ca-a7d1-e0d05a1fe565",
+      "name": "Save Qualified Lead to CRM Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        656,
+        608
+      ],
+      "typeVersion": 4.5
+    },
+    {
+      "parameters": {
+        "content": "Triggers on new phone number entry.",
+        "height": 260,
+        "color": 3
+      },
+      "id": "1b365b16-e3d3-41ee-99fd-e92d26de2b1e",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Captures name, company, challenges via POST.",
+        "height": 260,
+        "width": 220,
+        "color": 4
+      },
+      "id": "7843c35f-7957-4285-9726-8bd518065be6",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        816,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Qualifies lead with outbound call.\n",
+        "height": 280,
+        "width": 250,
+        "color": 5
+      },
+      "id": "e32182b9-c2b4-4021-b618-cdf961062ce2",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        208,
+        528
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Stores data in Google Sheet.\n",
+        "height": 300
+      },
+      "id": "00540380-6c9c-47a5-a322-5d823482f3e7",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        592,
+        528
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Confirms success to VAPI.\n",
+        "height": 300,
+        "width": 230,
+        "color": 6
+      },
+      "id": "beea0df6-d706-4b65-ae44-b78e11adb49a",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        528
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "0e5b636d-c8c4-4102-9c09-6a7373887e58",
+      "name": "Send Call Data Acknowledgement",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        1072,
+        608
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "60d5fdeb-b5d8-4e71-90d0-182acc695404",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "3fc02fbd-935c-4c24-aeb8-aac8b3f14efa",
+      "name": "Receive Lead Details from VAPI",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        288,
+        608
+      ],
+      "webhookId": "60d5fdeb-b5d8-4e71-90d0-182acc695404",
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-27T10:33:09.294Z",
+  "versionId": "83666a38-ec6f-492b-b5fa-cd4f15abdeba"
+}
