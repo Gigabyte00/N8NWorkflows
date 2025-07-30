@@ -1,0 +1,216 @@
+{
+  "active": false,
+  "connections": {
+    "Getting charge ID": {
+      "main": [
+        [
+          {
+            "node": "Getting invoice link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Getting line items": {
+      "main": [
+        [
+          {
+            "node": "Getting charge ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Getting invoice link": {
+      "main": [
+        [
+          {
+            "node": "Subscribe buyer to KlickTipp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New checkout session completed": {
+      "main": [
+        [
+          {
+            "node": "Getting line items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-19T10:50:19.328Z",
+  "id": "K9uF7lUeZFBJzWud",
+  "isArchived": false,
+  "meta": {
+    "templateId": "6092"
+  },
+  "name": "Automated Stripe to KlickTipp: Send Purchase Confirmation Emails via Tagging",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Data reception & collection via Webhook & HTTP Requests",
+        "height": 440,
+        "width": 860,
+        "color": 4
+      },
+      "id": "f53d9572-2100-4dbb-83af-6a663bc9ecbb",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Writing checkout data into contact record",
+        "height": 440,
+        "width": 320
+      },
+      "id": "51b80673-c272-4c2c-8fc3-969fe4a0cc6a",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1232,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "e19bea0c-f8d7-49f2-8b6f-a13bed1c465d",
+      "name": "Subscribe buyer to KlickTipp",
+      "type": "CUSTOM.klicktipp",
+      "position": [
+        1328,
+        448
+      ],
+      "notesInFlow": true,
+      "typeVersion": 2,
+      "credentials": {},
+      "notes": "Subscribes the buyer to the KlickTipp list using their payment data."
+    },
+    {
+      "parameters": {
+        "content": "### Introduction\nThis workflow automates Stripe checkout confirmations by capturing transaction data and syncing it into KlickTipp. Upon successful checkout, the contact's data is enriched with purchase details and tagged to trigger a personalized confirmation campaign in KlickTipp. Perfect for digital product sellers, course creators, and service providers seeking an end-to-end automated sales confirmation process.\n\n### Benefits\n- **Instant confirmation emails**: Automatically notify customers upon successful checkout—no manual processing needed.\n- **Structured contact data**: Order data (invoice link, amount, transaction ID, products) is stored in KlickTipp custom fields.\n- **Smart campaign triggering**: Assign dynamic tags to start automated confirmation or fulfillment sequences.\n- **Seamless digital delivery**: Ideal for pairing with tools like Memberspot or Mentortools to unlock digital products post-checkout.\n\n### Key Features\n- **Stripe Webhook Trigger**:\n  - Triggers on `Checkout Session.completed` events.\n  - Captures checkout data including product names, order number, and total amount.\n\n- **KlickTipp Contact Sync**:\n  - Adds or updates contacts in KlickTipp.\n  - Maps Stripe data into custom fields\n  - Assigns a tag such as `Stripe Checkout` to initiate a confirmation campaign.\n\n- **Router Logic (optional)**:\n  - Branches logic based on product ID or Stripe payment link.\n  - Enables product-specific campaigns or follow-ups.\n\n### Setup Instructions\n1. **KlickTipp Preparation**\n   - Create the following custom fields in your KlickTipp account:\n     - `Stripe_Beleg_URL` (URL)\n     - `Stripe_Gesamtbetrag` (Decimal)\n     - `Stripe_Zahlungs_ID` (Single Line)\n     - `Stripe_Produkte` (Single Line)\n   - Define a tag for each product or confirmation flow, e.g., `Bestellung: Kurs XYZ`.\n\n2. **Credential Configuration**\n     - Connect your Stripe account using an API key from the Stripe Dashboard.\n     - Authenticate your KlickTipp connection with username/password credentials (API access required).\n\n3. **Field Mapping and Workflow Alignment**\n   - Map Stripe output fields to the KlickTipp custom fields.\n   - Assign the tag to trigger your post-purchase campaign.\n   - Ensure that required data like email and opt-in info are present for the contact to be valid.\n\n### Testing and Deployment\n1. Click on **Inactive** to activate the scenario.\n2. Perform a test payment using a Stripe product link.\n3. Verify in KlickTipp:\n   - The contact appears with email and opt-in status.\n   - Custom fields for Stripe are filled.\n   - The campaign tag is correctly applied and confirmation email is sent.\n\n> ⚠️ *Note*: Use real or test-mode API keys in Stripe depending on your testing environment. Stripe events may take a few seconds to propagate.\n\n### Campaign Expansion Ideas\n- Launch targeted upsell flows based on the product tag.\n- Use confirmation placeholders like:\n  - `[[Stripe_Beleg_URL]]`\n  - `[[Stripe_Gesamtbetrag]]`\n  - `[[Stripe_Zahlungs_ID]]`\n  - `[[Stripe_Produkte]]`\n- Route customers to different product access portals (e.g., Memberspot, Mentortools).\n- Send follow-up content over multiple days using KlickTipp sequences.\n\n### Customization\nYou can extend the scenario using a switch node to:\n- Assign different tags per used payment link\n- Branch into upsell or membership activation flows  \n- Chain additional automations like CRM entry, Slack notification, or invoice creation.\n",
+        "height": 1600,
+        "width": 980,
+        "color": 7
+      },
+      "id": "6a72557d-32df-4928-8816-6eddbc0f45ba",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        448,
+        704
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "charge",
+        "chargeId": "={{ $json.latest_charge }}"
+      },
+      "id": "26f6a896-68ce-491f-9e7e-92a667aff2a5",
+      "name": "Getting invoice link",
+      "type": "n8n-nodes-base.stripe",
+      "position": [
+        1072,
+        448
+      ],
+      "notesInFlow": true,
+      "typeVersion": 1,
+      "notes": "This node gets the details from the payment in order to identify the line items and amount of the payment."
+    },
+    {
+      "parameters": {
+        "url": "=https://api.stripe.com/v1/payment_intents/{{ $('New checkout session completed').item.json.data.object.payment_intent }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "authorization",
+              "value": "Basic <YOURKEY>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d16814e5-7255-4da3-ac0c-64b80e4fc72c",
+      "name": "Getting charge ID",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        848,
+        448
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2,
+      "notes": "This node gets the charge ID from the checkout completion in order to be able to fetch the receipt url."
+    },
+    {
+      "parameters": {
+        "url": "=https://api.stripe.com/v1/checkout/sessions/{{ $json.data.object.id }}/line_items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Stripe-Version",
+              "value": "2025-05-28.basil"
+            },
+            {
+              "name": "authorization",
+              "value": "Basic <YOURKEY>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "815f0790-be2c-455f-a3ad-02b2b118a3ff",
+      "name": "Getting line items",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        656,
+        448
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2,
+      "notes": "This node gets the line items from the checkout session."
+    },
+    {
+      "parameters": {
+        "events": [
+          "checkout.session.completed"
+        ]
+      },
+      "id": "e719d079-0065-44a2-a2c1-c59ded09b388",
+      "name": "New checkout session completed",
+      "type": "n8n-nodes-base.stripeTrigger",
+      "position": [
+        432,
+        448
+      ],
+      "webhookId": "0d270008-d22c-486b-8ba1-e7d68b942512",
+      "notesInFlow": true,
+      "typeVersion": 1,
+      "notes": "This trigger listens to successful checkout completions from Stripe."
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T10:50:19.328Z",
+  "versionId": "f72afe75-824f-4306-9908-d6317f5348e8"
+}
